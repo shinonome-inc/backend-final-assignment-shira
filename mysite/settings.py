@@ -31,15 +31,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "accounts.apps.AccountsConfig",
-    "tweets.apps.TweetsConfig",
-    "welcome.apps.WelcomeConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "accounts.apps.AccountsConfig",
+    "tweets.apps.TweetsConfig",
+    "welcome.apps.WelcomeConfig",
 ]
 
 MIDDLEWARE = [
@@ -126,6 +126,3 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "accounts.CustomUser"
-
-LOGIN_URL = "login"
-LOGIN_REDIRECT_URL = "home"
