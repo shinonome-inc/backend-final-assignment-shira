@@ -17,6 +17,10 @@ def signup(request):
     return render(request, "accounts/signup.html", param)
 
 
+def index(request):
+    return render(request, "accounts/index.html")
+
+
 @login_required
 def home(request):
     return render(request, "accounts/home.html")

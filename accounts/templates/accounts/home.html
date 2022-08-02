@@ -1,9 +1,20 @@
-{% extends 'accounts/base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
 
-{% block content %}
-<h1>ホーム画面</h1>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
+</head>
 
-<p>こんにちは{{ user.username }}さん</p>
-<p><a href="{% url 'logout' %}">ログアウト</a></p>
-
-{% endblock %}
+<body>
+    <div class = "left-field">
+    <a href="/accounts/home/" class="left-field">Twitter Clone</a>
+    </div>
+    <div class="right-field">
+    <a href="{% url 'logout' %}" class="right-field">ログアウト</a>
+    </div>
+    <h1>こんにちは{{ user.username }}さん</h1>
+</body>
