@@ -4,7 +4,11 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 
 
-def signup(request):
+def index(request):
+    return render(request, "accounts/index.html")
+
+
+def SignUpView(request):
     if request.method == "POST":
         form = SignupForm(request.POST)
         if form.is_valid():
@@ -17,10 +21,6 @@ def signup(request):
     return render(request, "accounts/signup.html", param)
 
 
-def index(request):
-    return render(request, "accounts/index.html")
-
-
 @login_required
-def home(request):
+def HomeView(request):
     return render(request, "accounts/home.html")
