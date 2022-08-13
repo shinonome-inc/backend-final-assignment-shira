@@ -2,7 +2,7 @@ from django.urls import reverse
 from django.test import TestCase
 
 from mysite.settings import LOGIN_REDIRECT_URL, LOGOUT_REDIRECT_URL
-from .forms import LoginForm, SignupForm
+from .forms import SignupForm
 from .models import CustomUser
 from django.contrib.auth import get_user_model, SESSION_KEY
 
@@ -13,7 +13,7 @@ class TestSignUpView(TestCase):
     def test_success_get(self):
         response = self.client.get(reverse("signup"))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "accounts/signup.html")
+        self.assertTemplateUsed(response, "accounts/signup.html")  # type: ignore
 
     def test_success_post(self):
         data = {
@@ -24,7 +24,7 @@ class TestSignUpView(TestCase):
         response = self.client.post(reverse("signup"), data)
 
         self.assertRedirects(
-            response,
+            response,  # type: ignore
             reverse(LOGIN_REDIRECT_URL),
             status_code=302,
             target_status_code=200,
@@ -179,7 +179,7 @@ class TestHomeView(TestCase):
 
 class TestLoginView(TestCase):
     def setUp(self):
-        CustomUser.objects.create_user(username="testuser", password="testpassword")
+        CustomUser.objects.create_user(username="testuser", password="testpassword")  # type: ignore
         self.url = reverse("login")
 
     def test_success_get(self):
@@ -194,7 +194,7 @@ class TestLoginView(TestCase):
         response = self.client.post(reverse("login"), data)
 
         self.assertRedirects(
-            response,
+            response,  # type: ignore
             reverse(LOGIN_REDIRECT_URL),
             status_code=302,
             target_status_code=200,
@@ -212,7 +212,7 @@ class TestLoginView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotIn(SESSION_KEY, self.client.session)
         self.assertFormError(
-            response, "form", "", "正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。"
+            response, "form", "", "正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。"  # type: ignore
         )
 
     def test_failure_post_with_empty_password(self):
@@ -224,7 +224,7 @@ class TestLoginView(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertNotIn(SESSION_KEY, self.client.session)
-        self.assertFormError(response, "form", "password", "このフィールドは必須です。")
+        self.assertFormError(response, "form", "password", "このフィールドは必須です。")  # type: ignore
 
 
 class TestLogoutView(TestCase):
@@ -239,7 +239,7 @@ class TestLogoutView(TestCase):
     def test_success_get(self):
         response = self.client.get(reverse("logout"))
         self.assertRedirects(
-            response,
+            response,  # type: ignore
             reverse(LOGOUT_REDIRECT_URL),
             status_code=302,
             target_status_code=200,
