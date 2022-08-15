@@ -2,7 +2,6 @@ from django.urls import reverse
 from django.test import TestCase
 
 from mysite.settings import LOGIN_REDIRECT_URL, LOGOUT_REDIRECT_URL
-from .models import CustomUser
 from django.contrib.auth import get_user_model, SESSION_KEY
 
 User = get_user_model()
@@ -28,9 +27,9 @@ class TestSignUpView(TestCase):
             status_code=302,
         )
 
-        self.assertEqual(CustomUser.objects.count(), 1)
+        self.assertEqual(User.objects.count(), 1)
 
-        self.assertTrue(CustomUser.objects.filter(username=data["username"]).exists())
+        self.assertTrue(User.objects.filter(username=data["username"]).exists())
 
         self.assertIn(SESSION_KEY, self.client.session)
 
@@ -42,7 +41,7 @@ class TestSignUpView(TestCase):
         }
         response = self.client.post(reverse("signup"), data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(CustomUser.objects.count(), 0)
+        self.assertEqual(User.objects.count(), 0)
         self.assertFormError(response, "form", "username", "このフィールドは必須です。")  # type: ignore
 
     def test_failure_post_with_empty_username(self):
@@ -53,7 +52,7 @@ class TestSignUpView(TestCase):
         }
         response = self.client.post(reverse("signup"), data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(CustomUser.objects.count(), 0)
+        self.assertEqual(User.objects.count(), 0)
         self.assertFormError(response, "form", "username", "このフィールドは必須です。")  # type: ignore
 
     def test_failure_post_with_empty_password(self):
@@ -64,7 +63,7 @@ class TestSignUpView(TestCase):
         }
         response = self.client.post(reverse("signup"), data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(CustomUser.objects.count(), 0)
+        self.assertEqual(User.objects.count(), 0)
         self.assertFormError(response, "form", "password2", "このフィールドは必須です。")  # type: ignore
 
     def test_failure_post_with_duplicated_user(self):
@@ -83,7 +82,7 @@ class TestSignUpView(TestCase):
         response = self.client.post(reverse("signup"), new_data)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(CustomUser.objects.count(), 1)
+        self.assertEqual(User.objects.count(), 1)
         self.assertFormError(response, "form", "username", "同じユーザー名が既に登録済みです。")  # type: ignore
 
     def test_failure_post_with_too_short_password(self):
@@ -94,7 +93,7 @@ class TestSignUpView(TestCase):
         }
         response = self.client.post(reverse("signup"), data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(CustomUser.objects.count(), 0)
+        self.assertEqual(User.objects.count(), 0)
         self.assertFormError(
             response, "form", "password2", "このパスワードは短すぎます。最低 8 文字以上必要です。"  # type: ignore
         )
@@ -107,7 +106,7 @@ class TestSignUpView(TestCase):
         }
         response = self.client.post(reverse("signup"), data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(CustomUser.objects.count(), 0)
+        self.assertEqual(User.objects.count(), 0)
         self.assertFormError(response, "form", "password2", "このパスワードは ユーザー名 と似すぎています。")  # type: ignore
 
     def test_failure_post_with_only_numbers_password(self):
@@ -118,7 +117,7 @@ class TestSignUpView(TestCase):
         }
         response = self.client.post(reverse("signup"), data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(CustomUser.objects.count(), 0)
+        self.assertEqual(User.objects.count(), 0)
         self.assertFormError(response, "form", "password2", "このパスワードは一般的すぎます。")  # type: ignore
 
     def test_failure_post_with_mismatch_password(self):
@@ -129,7 +128,7 @@ class TestSignUpView(TestCase):
         }
         response = self.client.post(reverse("signup"), data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(CustomUser.objects.count(), 0)
+        self.assertEqual(User.objects.count(), 0)
         self.assertFormError(response, "form", "password2", "確認用パスワードが一致しません。")  # type: ignore
 
 
@@ -154,7 +153,7 @@ class TestHomeView(TestCase):
 
 class TestLoginView(TestCase):
     def setUp(self):
-        CustomUser.objects.create_user(username="testuser", password="testpassword")  # type: ignore
+        User.objects.create_user(username="testuser", password="testpassword")  # type: ignore
         self.url = reverse("login")
 
     def test_success_get(self):
