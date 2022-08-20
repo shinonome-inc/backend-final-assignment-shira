@@ -1,7 +1,5 @@
 from django.urls import reverse
 from django.test import TestCase
-from django.contrib.auth.models import UserManager
-from .models import CustomUser
 from mysite.settings import LOGIN_REDIRECT_URL, LOGOUT_REDIRECT_URL
 from django.contrib.auth import get_user_model, SESSION_KEY
 
