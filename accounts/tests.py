@@ -87,8 +87,8 @@ class TestSignUpView(TestCase):
     def test_failure_post_with_too_short_password(self):
         data = {
             "username": "testuser",
-            "password1": "test",
-            "password2": "test",
+            "password1": "atre",
+            "password2": "atre",
         }
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 200)
@@ -117,7 +117,9 @@ class TestSignUpView(TestCase):
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(User.objects.count(), 0)
-        self.assertFormError(response, "form", "password2", "このパスワードは一般的すぎます。")
+        self.assertFormError(
+            response, "form", "password2", "このパスワードは一般的すぎます。", "このパスワードは数字しか使われていません。"
+        )
 
     def test_failure_post_with_mismatch_password(self):
         data = {
@@ -177,7 +179,7 @@ class TestLoginView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotIn(SESSION_KEY, self.client.session)
         self.assertFormError(
-            response, "form", "", "正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。"
+            response, "form", "正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。"
         )
 
     def test_failure_post_with_empty_password(self):
