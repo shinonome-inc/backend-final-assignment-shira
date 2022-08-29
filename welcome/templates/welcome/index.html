@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>WELCOME</title>
-</head>
-<body>
-  <h1>Backend Final Assignment</h1>
-</body>
-</html>
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<h1>こんにちは{{ user.username }}さん</h1>
+{% else %}
+<h1>Backend Final Assignment</h1>
+{% endif %}
+{% endblock %}

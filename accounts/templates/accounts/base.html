@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/5.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/5.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
+</head>
+
+<body>
+    <div class="left-field">
+        <a href="{% url 'welcome:index' %}" class="left-field">Twitter Clone</a>
+    {% if user.is_authenticated %}
+    </div>
+    <div class="right-field">
+        <a href="{% url 'accounts:logout' %}" class="right-field">ログアウト</a>
+    </div>
+    {% else %}
+    </div>
+    <div class="right-field">
+        <a href="{% url 'accounts:login' %}" class="right-field">ログイン</a>
+        <a href="{% url 'accounts:signup' %}" class="right-field">登録</a>
+    </div>
+    {% endif %}
+    {% block content %}
+    {% endblock %}
+</body>
+
+</html>
