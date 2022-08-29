@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import SignupForm, LoginForm
 from django.contrib.auth import login, logout
-from django.contrib.auth.decorators import login_required
 
 
 def signup_view(request):
@@ -21,16 +20,14 @@ def login_view(request):
         form = LoginForm(request=request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
-            if user:
-                if user.is_active:
-                    login(request, user)
-                    return redirect("welcome:index")
+            if user.is_active:
+                login(request, user)
+                return redirect("welcome:index")
     else:
         form = LoginForm()
     return render(request, "accounts/login.html", {"form": form})
 
 
-@login_required
 def logout_view(request):
     logout(request)
     return redirect("welcome:index")

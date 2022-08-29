@@ -3,6 +3,7 @@ from django.test import TestCase
 from mysite.settings import LOGIN_REDIRECT_URL, LOGOUT_REDIRECT_URL
 from django.contrib.auth import get_user_model, SESSION_KEY
 
+
 User = get_user_model()
 
 
@@ -139,9 +140,9 @@ class TestHomeView(TestCase):
             "username": "testuser",
             "password": "testpassword",
         }
-        response = self.client.get(reverse("accounts:home"), data)
+        response = self.client.get(reverse("welcome:index"), data)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "accounts/home.html")
+        self.assertTemplateUsed(response, "welcome/index.html")
 
 
 class TestLoginView(TestCase):

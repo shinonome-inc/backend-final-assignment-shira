@@ -10,16 +10,14 @@
 </head>
 
 <body>
-    {% if user.is_authenticated %}
     <div class="left-field">
         <a href="{% url 'welcome:index' %}" class="left-field">Twitter Clone</a>
+    {% if user.is_authenticated %}
     </div>
     <div class="right-field">
         <a href="{% url 'accounts:logout' %}" class="right-field">ログアウト</a>
     </div>
     {% else %}
-    <div class="left-field">
-        <a href="{% url 'welcome:index' %}" class="left-field">Twitter Clone</a>
     </div>
     <div class="right-field">
         <a href="{% url 'accounts:login' %}" class="right-field">ログイン</a>
