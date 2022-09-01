@@ -1,0 +1,9 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<h1>{{ user.username }}さんのツイート</h1>
+{% else %}
+<h1>Backend Final Assignment</h1>
+{% endif %}
+{% endblock %}

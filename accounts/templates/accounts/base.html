@@ -15,6 +15,7 @@
     {% if user.is_authenticated %}
     </div>
     <div class="right-field">
+        <a class="right-field">ユーザ：{{ user.username }}&nbsp;&nbsp;&nbsp;</a>
         <a href="{% url 'accounts:logout' %}" class="right-field">ログアウト</a>
     </div>
     {% else %}
