@@ -1,40 +1,37 @@
-from django.views.generic import CreateView, DetailView, DeleteView
-from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import get_object_or_404
-from django.forms import Textarea
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_http_methods
 
 from .models import Tweet
 
 
-class TweetCreateView(LoginRequiredMixin, CreateView):
-    model = Tweet
-    fields = ("content",)
-    template_name = "tweets/create.html"
-    success_url = reverse_lazy("accounts:home")
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["content"].widget = Textarea()
-
-        return form
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
+"""@login_required
+@require_http_methods(["GET"])"""
 
 
-class TweetDetailView(LoginRequiredMixin, DetailView):
-    model = Tweet
-    context_object_name = "tweet"
-    template_name = "tweets/detail.html"
+def tweet_detail_view(request, tweet_id):
+    tweet = get_object_or_404(Tweet, pk=tweet_id)
+    return render(request, "tweet/tweet_detail.html", {"tweet": tweet})
 
 
-class TweetDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = Tweet
-    template_name = "tweets/delete.html"
-    success_url = reverse_lazy("accounts:home")
+"""@login_required
+@require_http_methods(["GET"])"""
 
-    def test_func(self):
-        tweet = get_object_or_404(Tweet, pk=self.kwargs["pk"])
-        return self.request.user.pk == tweet.user.pk
+
+def tweet_create_view(request, tweet_id):
+    tweet = get_object_or_404(Tweet, pk=tweet_id)
+    return render(request, "tweet/tweet_detail.html", {"tweet": tweet})
+
+
+"""@login_required
+@require_http_methods(["GET"])"""
+
+
+def delete_tweet_view(request, tweet_id):
+    tweet = get_object_or_404(Tweet, pk=tweet_id)
+    if tweet.user == request.user:
+        tweet.delete()
+        return redirect("/home/")
+    else:
+        raise PermissionDenied

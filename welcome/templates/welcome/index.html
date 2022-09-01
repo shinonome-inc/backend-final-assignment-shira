@@ -3,6 +3,25 @@
 {% block content %}
 {% if user.is_authenticated %}
 <h1>こんにちは{{ user.username }}さん</h1>
+{% for tweet in tweet_list %}
+<p></p>
+<div class="card">
+    <div class="card-body">
+        <p>{{ tweet.user }}</p>
+        <div>
+            <p>{{ tweet.content | linebreaksbr }}</p>
+        </div>
+        <div align="right">
+            <a type="button" class="btn btn-outline-primary" "text-end" data-mdb-ripple-color="dark"
+                href="{% url 'tweets:detail' tweet.pk %}">
+                詳細
+            </a>
+        </div>
+    </div>
+</div>
+{% empty %}
+<h4 class="text-center my-3">ツイートはありません。</h4>
+{% endfor %}
 {% else %}
 <h1>Backend Final Assignment</h1>
 {% endif %}
