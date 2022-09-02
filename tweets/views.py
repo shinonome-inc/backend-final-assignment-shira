@@ -1,7 +1,4 @@
-from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.http import require_http_methods
 from .forms import TweetForm
 
 from .models import Tweet
@@ -28,10 +25,10 @@ def tweet_detail_view(request, tweet_id):
 
 
 def tweet_delete_view(request, tweet_id):
-    tweet = Tweet.objects.get(pk=tweet_id)
+    template_name = "tweets/tweet_delete.html"
+    tweet = get_object_or_404(Tweet, pk=tweet_id)
     context = {"tweet": tweet}
-    if request.method == "POST":
-        if "confirm" in request.POST:
-            tweet.delete()
-            return redirect("welcome:index")
-    return render(request, "tweets/tweet_delete.html", context)
+    if request.POST:
+        tweet.delete()
+        return redirect("welcome:index")
+    return render(request, template_name, context)

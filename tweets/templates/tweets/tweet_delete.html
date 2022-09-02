@@ -3,11 +3,9 @@
 {% block content %}
 <p>{{ tweet.user }}</p>
 <p>{{ tweet.content | linebreaksbr }}</p>
-<form action="post">
-    {% csrf_token %}
-
-    <a class="right-field">このツイートを消去しますか&nbsp;&nbsp;&nbsp;</a>
+<form method="post">{% csrf_token %}
+    <a class="right-field">消去すると復元できません。よろしいですか？&nbsp;&nbsp;&nbsp;</a>
     <button type="submit" name = "confirm" class="right-field">消去</button>
-    <a href="{% url 'tweets:tweet_detail' tweet.pk %}" class="right-field">キャンセル</a>
+    <a href="{% url 'welcome:index' %}" class="right-field">キャンセル</a>
 </form>
 {% endblock %}
