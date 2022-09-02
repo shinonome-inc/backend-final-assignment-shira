@@ -1,9 +1,9 @@
 {% extends 'accounts/base.html' %}
 
 {% block content %}
-{% if user.is_authenticated %}
-<h1>{{ user.username }}さんのツイート</h1>
-{% else %}
-<h1>Backend Final Assignment</h1>
+<p>{{ tweet.user }}</p>
+<p>{{ tweet.content | linebreaksbr }}</p>
+{% if tweet.user == request.user %}
+<a type="button" data-mdb-ripple-color="dark" href="{% url 'tweets:tweet_delete' tweet.pk %}">削除</a>
 {% endif %}
 {% endblock %}

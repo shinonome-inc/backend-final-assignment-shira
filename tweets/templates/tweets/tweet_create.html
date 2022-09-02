@@ -1,0 +1,9 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<form action="{% url 'tweets:tweet_create' %}" method="post">
+    {% csrf_token %}
+    {{ tweet.as_p }}
+    <button type="submit">呟く</button>
+</form>
+{% endblock %}
