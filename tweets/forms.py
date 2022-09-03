@@ -10,7 +10,7 @@ class TweetForm(forms.ModelForm):
         widgets = {
             "content": forms.Textarea(attrs={"placeholder": "今どうしてる？"}),
         }
-        labels = {"content": "内容"}
+        labels = {"content": ""}
         """error_messages = {
             "content": {"required": "入力が必須です．", "max_length": "文字数は，255文字以下です．"}
         }"""

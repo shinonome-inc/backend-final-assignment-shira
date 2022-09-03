@@ -6,15 +6,15 @@ from .models import Tweet
 
 def tweet_create_view(request):
     if request.method == "POST":
-        form = TweetForm(request.POST or None)
-        if form.is_valid():
-            tweet = form.save(commit=False)
-            tweet.user = request.user
-            tweet.save()
+        tweet = TweetForm(request.POST or None)
+        if tweet.is_valid():
+            form = tweet.save(commit=False)
+            form.user = request.user
+            form.save()
             return redirect("welcome:index")
     else:
         tweet = TweetForm()
-        context = {"tweet": tweet}
+    context = {"tweet": tweet}
     return render(request, "tweets/tweet_create.html", context)
 
 
