@@ -1,6 +1,5 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.test import TestCase
 from mysite.settings import LOGIN_REDIRECT_URL, LOGOUT_REDIRECT_URL
 from django.contrib.auth import get_user_model, SESSION_KEY
 from .models import Tweet
@@ -80,14 +79,46 @@ class TestTweetDetailView(TestCase):
 
 
 class TestTweetDeleteView(TestCase):
+    def setUp(self):
+        self.user1 = User.objects.create_user(
+            username="testuser1",
+            password="testpassword1",
+        )
+        self.user2 = User.objects.create_user(
+            username="testuser2",
+            password="testpassword2",
+        )
+        self.client.login(
+            username="testuser1",
+            password="testpassword1",
+        )
+        self.tweet1 = Tweet.objects.create(user=self.user1, content="testtweet1")
+        self.tweet2 = Tweet.objects.create(user=self.user2, content="testtweet2")
+
     def test_success_post(self):
-        pass
+        response = self.client.post(
+            reverse("tweets:tweet_delete", kwargs={"pk": self.tweet1.pk}),
+            {},
+        )
+        self.assertRedirects(
+            response,
+            reverse("welcome:index"),
+            status_code=302,
+            target_status_code=200,
+        )
+        self.assertFalse(Tweet.objects.filter(content="testtweet1").exists())
 
     def test_failure_post_with_not_exist_tweet(self):
-        pass
+        response = self.client.post(reverse("tweets:tweet_delete", kwargs={"pk": 10}))
+        self.assertEquals(response.status_code, 404)
+        self.assertEquals(Tweet.objects.count(), 2)
 
     def test_failure_post_with_incorrect_user(self):
-        pass
+        response = self.client.post(
+            reverse("tweets:tweet_delete", kwargs={"pk": self.tweet2.pk})
+        )
+        self.assertEquals(response.status_code, 403)
+        self.assertEquals(Tweet.objects.count(), 2)
 
 
 class TestFavoriteView(TestCase):

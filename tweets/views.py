@@ -18,15 +18,15 @@ def tweet_create_view(request):
     return render(request, "tweets/tweet_create.html", context)
 
 
-def tweet_detail_view(request, tweet_id):
-    tweet = Tweet.objects.get(pk=tweet_id)
+def tweet_detail_view(request, pk):
+    tweet = Tweet.objects.get(pk=pk)
     context = {"tweet": tweet}
     return render(request, "tweets/tweet_detail.html", context)
 
 
-def tweet_delete_view(request, tweet_id):
+def tweet_delete_view(request, pk):
     template_name = "tweets/tweet_delete.html"
-    tweet = get_object_or_404(Tweet, pk=tweet_id)
+    tweet = get_object_or_404(Tweet, pk=pk)
     context = {"tweet": tweet}
     if request.POST:
         tweet.delete()
