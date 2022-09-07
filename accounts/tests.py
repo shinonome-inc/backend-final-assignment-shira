@@ -150,8 +150,7 @@ class TestSignUpView(TestCase):
             response,
             "form",
             "password2",
-            "このパスワードは一般的すぎます。",
-            "このパスワードは数字しか使われていません。",
+            ["このパスワードは一般的すぎます。", "このパスワードは数字しか使われていません。"],
         )
 
     def test_failure_post_with_mismatch_password(self):
@@ -234,6 +233,7 @@ class TestLoginView(TestCase):
         self.assertFormError(
             response,
             "form",
+            None,
             "正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。",
         )
 
