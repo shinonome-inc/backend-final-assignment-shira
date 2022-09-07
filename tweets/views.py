@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from .forms import TweetForm
-
+from django.core.exceptions import PermissionDenied
 from .models import Tweet
 
 
@@ -28,7 +28,10 @@ def tweet_delete_view(request, pk):
     template_name = "tweets/tweet_delete.html"
     tweet = get_object_or_404(Tweet, pk=pk)
     context = {"tweet": tweet}
-    if request.POST:
-        tweet.delete()
-        return redirect("welcome:index")
-    return render(request, template_name, context)
+    if tweet.user == request.user:
+        if request.POST:
+            tweet.delete()
+            return redirect("welcome:index")
+        return render(request, template_name, context)
+    else:
+        raise PermissionDenied

@@ -1,7 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from mysite.settings import LOGIN_REDIRECT_URL, LOGOUT_REDIRECT_URL
-from django.contrib.auth import get_user_model, SESSION_KEY
+from django.contrib.auth import get_user_model
 from .models import Tweet
 
 
@@ -98,13 +97,11 @@ class TestTweetDeleteView(TestCase):
     def test_success_post(self):
         response = self.client.post(
             reverse("tweets:tweet_delete", kwargs={"pk": self.tweet1.pk}),
-            {},
         )
         self.assertRedirects(
             response,
             reverse("welcome:index"),
             status_code=302,
-            target_status_code=200,
         )
         self.assertFalse(Tweet.objects.filter(content="testtweet1").exists())
 
