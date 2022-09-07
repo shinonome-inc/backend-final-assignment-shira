@@ -29,7 +29,7 @@ def tweet_delete_view(request, pk):
     tweet = get_object_or_404(Tweet, pk=pk)
     context = {"tweet": tweet}
     if tweet.user == request.user:
-        if request.POST:
+        if request.method == "POST":
             tweet.delete()
             return redirect("welcome:index")
         return render(request, template_name, context)
