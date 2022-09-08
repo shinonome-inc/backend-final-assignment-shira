@@ -3,7 +3,7 @@
 {% block content %}
 {% if user.is_authenticated %}
 <h1>おかえりなさい、{{ user.username }}さん</h1>
-<a href="{% url 'tweets:tweet_create' %}" class="right-field">呟く</a>
+<a href="{% url 'tweets:create' %}" class="right-field">呟く</a>
 {% for tweet in tweet_list %}
 <p></p>
 <div class="card">
@@ -14,7 +14,7 @@
         </div>
         <div align="right">
             <a type="button" class="btn btn-outline-primary" "text-end" data-mdb-ripple-color="dark"
-                href="{% url 'tweets:tweet_detail' tweet.pk %}">
+                href="{% url 'tweets:detail' tweet.pk %}">
                 詳細
             </a>
         </div>

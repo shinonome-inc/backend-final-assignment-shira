@@ -5,6 +5,6 @@
 <p>{{ tweet.content | linebreaksbr }}</p>
 <p>{{ tweet.created_at }}</p>
 {% if tweet.user == request.user %}
-<a type="button" data-mdb-ripple-color="dark" href="{% url 'tweets:tweet_delete' tweet.pk %}">削除</a>
+<a type="button" data-mdb-ripple-color="dark" href="{% url 'tweets:delete' tweet.pk %}">削除</a>
 {% endif %}
 {% endblock %}

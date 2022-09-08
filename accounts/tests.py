@@ -1,7 +1,8 @@
 from django.urls import reverse
 from django.test import TestCase
-from mysite.settings import LOGIN_REDIRECT_URL, LOGOUT_REDIRECT_URL
 from django.contrib.auth import get_user_model, SESSION_KEY
+
+from mysite.settings import LOGIN_REDIRECT_URL, LOGOUT_REDIRECT_URL
 from tweets.models import Tweet
 
 

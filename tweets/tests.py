@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+
 from .models import Tweet
 
 
@@ -11,12 +12,12 @@ class TestTweetCreateView(TestCase):
     def setUp(self):
         User.objects.create_user(username="testuser", password="testpassword")
         self.client.login(username="testuser", password="testpassword")
-        self.url = reverse("tweets:tweet_create")
+        self.url = reverse("tweets:create")
 
     def test_success_get(self):
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, "tweets/tweet_create.html")
+        self.assertTemplateUsed(response, "tweets/create.html")
 
     def test_success_post(self):
         test_data = {"content": "testcontent"}
@@ -70,10 +71,10 @@ class TestTweetDetailView(TestCase):
 
     def test_success_get(self):
         response = self.client.get(
-            reverse("tweets:tweet_detail", kwargs={"pk": self.tweet.pk})
+            reverse("tweets:detail", kwargs={"pk": self.tweet.pk})
         )
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, "tweets/tweet_detail.html")
+        self.assertTemplateUsed(response, "tweets/detail.html")
         self.assertEquals(self.tweet, response.context["tweet"])
 
 
@@ -96,7 +97,7 @@ class TestTweetDeleteView(TestCase):
 
     def test_success_post(self):
         response = self.client.post(
-            reverse("tweets:tweet_delete", kwargs={"pk": self.tweet1.pk}),
+            reverse("tweets:delete", kwargs={"pk": self.tweet1.pk}),
         )
         self.assertRedirects(
             response,
@@ -106,13 +107,13 @@ class TestTweetDeleteView(TestCase):
         self.assertFalse(Tweet.objects.filter(content="testtweet1").exists())
 
     def test_failure_post_with_not_exist_tweet(self):
-        response = self.client.post(reverse("tweets:tweet_delete", kwargs={"pk": 10}))
+        response = self.client.post(reverse("tweets:delete", kwargs={"pk": 10}))
         self.assertEquals(response.status_code, 404)
         self.assertEquals(Tweet.objects.count(), 2)
 
     def test_failure_post_with_incorrect_user(self):
         response = self.client.post(
-            reverse("tweets:tweet_delete", kwargs={"pk": self.tweet2.pk})
+            reverse("tweets:delete", kwargs={"pk": self.tweet2.pk})
         )
         self.assertEquals(response.status_code, 403)
         self.assertEquals(Tweet.objects.count(), 2)
