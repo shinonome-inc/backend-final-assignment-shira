@@ -1,8 +1,8 @@
 from django.urls import reverse
 from django.test import TestCase
 from django.contrib.auth import get_user_model, SESSION_KEY
+from django.conf import settings
 
-from mysite.settings import LOGIN_REDIRECT_URL, LOGOUT_REDIRECT_URL
 from tweets.models import Tweet
 
 
@@ -28,7 +28,7 @@ class TestSignUpView(TestCase):
 
         self.assertRedirects(
             response,
-            reverse(LOGIN_REDIRECT_URL),
+            reverse(settings.LOGIN_REDIRECT_URL),
             status_code=302,
         )
         self.assertEqual(User.objects.count(), 1)
@@ -218,7 +218,7 @@ class TestLoginView(TestCase):
         response = self.client.post(reverse("accounts:login"), data)
         self.assertRedirects(
             response,
-            reverse(LOGIN_REDIRECT_URL),
+            reverse(settings.LOGIN_REDIRECT_URL),
             status_code=302,
         )
         self.assertIn(SESSION_KEY, self.client.session)
@@ -266,7 +266,7 @@ class TestLogoutView(TestCase):
         response = self.client.get(self.url)
         self.assertRedirects(
             response,
-            reverse(LOGOUT_REDIRECT_URL),
+            reverse(settings.LOGOUT_REDIRECT_URL),
             status_code=302,
         )
         self.assertNotIn(SESSION_KEY, self.client.session)
