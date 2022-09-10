@@ -1,0 +1,12 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<p>{{ tweet.user }}のツイート</p>
+<p>{{ tweet.content | linebreaksbr }}</p>
+<p>{{ tweet.created_at }}</p>
+<form method="post">{% csrf_token %}
+    <a class="right-field">消去すると復元できません。よろしいですか？&nbsp;&nbsp;&nbsp;</a>
+    <button type="submit" name = "confirm" class="right-field">消去</button>
+    <a href="{% url 'tweets:detail' tweet.pk %}" class="right-field">キャンセル</a>
+</form>
+{% endblock %}
