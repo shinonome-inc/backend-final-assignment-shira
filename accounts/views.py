@@ -32,3 +32,19 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect("welcome:index")
+
+
+def follow_view(request):
+    pass
+
+
+def follower_view(request):
+    pass
+
+
+def following_list_view(request):
+    pass
+
+
+def follower_list_view(request):
+    pass
