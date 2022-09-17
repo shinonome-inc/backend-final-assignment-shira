@@ -1,7 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
+from django.contrib.auth import get_user_model
 
 from .forms import SignupForm, LoginForm
+from .models import Connection
+
+
+User = get_user_model()
 
 
 def signup_view(request):
@@ -34,17 +39,24 @@ def logout_view(request):
     return redirect("welcome:index")
 
 
-def follow_view(request):
-    pass
+def follow_view(request, username):
+    follow_user = User.objects.get(username=username)
+    connection = Connection.objects.get(user=request.user)
+    connection.following.add(follow_user)
+    return redirect("welcome:index")
 
 
-def follower_view(request):
-    pass
+def unfollow_view(request, username):
+    unfollow_user = User.objects.get(username=username)
+    connection = Connection.objects.get(user=request.user)
+    connection.following.remove(unfollow_user)
+    return redirect("welcome:index")
 
 
-def following_list_view(request):
-    pass
+def following_list_view(request, username):
+    connection = Connection.objects.get(user=request.user)
+    connection.following.all()
 
 
-def follower_list_view(request):
-    pass
+def follower_list_view(request, username):
+    Connection.objects.filter(following=request.user)
