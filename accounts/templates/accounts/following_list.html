@@ -1,0 +1,19 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<h1>{{ user.username }}さんがフォロー中のユーザー</h1>
+{% for following in following_list %}
+<p></p>
+<div class="card">
+    <div class="card-body">
+        <p>{{ following.username }}</p>
+        {% if following in follower_list %}
+        <p>フォローされています</p>
+        {% endif %}
+        <a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:unfollow' following.username %}">アンフォロー</a>
+    </div>
+</div>
+{% empty %}
+<h4 class="text-center my-3">誰もフォローしていません</h4>
+{% endfor %}
+{% endblock %}

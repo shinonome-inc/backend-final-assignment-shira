@@ -4,6 +4,8 @@
 {% if user.is_authenticated %}
 <h1>おかえりなさい、{{ user.username }}さん</h1>
 <a href="{% url 'tweets:create' %}" class="right-field">呟く</a>
+<a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:following_list' user.username %}">フォローリスト</a>
+<a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:follower_list' user.username %}">フォロワーリスト</a>
 {% for tweet in tweet_list %}
 <p></p>
 <div class="card">

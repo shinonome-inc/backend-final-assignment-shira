@@ -57,8 +57,21 @@ def unfollow_view(request, username):
 
 def following_list_view(request, username):
     connection = Connection.objects.get(user=request.user)
-    connection.following.all()
+    following_list = connection.following.all()
+    follower_list = User.objects.filter(connection__following=request.user)
+    context = {
+        "following_list": following_list,
+        "follower_list": follower_list,
+    }
+    return render(request, "accounts/following_list.html", context)
 
 
 def follower_list_view(request, username):
-    Connection.objects.filter(following=request.user)
+    connection = Connection.objects.get(user=request.user)
+    following_list = connection.following.all()
+    follower_list = User.objects.filter(connection__following=request.user)
+    context = {
+        "following_list": following_list,
+        "follower_list": follower_list,
+    }
+    return render(request, "accounts/follower_list.html", context)
