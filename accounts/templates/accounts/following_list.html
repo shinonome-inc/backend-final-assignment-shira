@@ -1,7 +1,7 @@
 {% extends 'accounts/base.html' %}
 
 {% block content %}
-<h1>{{ user.username }}さんがフォロー中のユーザー</h1>
+<h1>{{ username }}さんがフォロー中のユーザー</h1>
 {% for following in following_list %}
 <p></p>
 <div class="card">
@@ -14,6 +14,6 @@
     </div>
 </div>
 {% empty %}
-<h4 class="text-center my-3">誰もフォローしていません</h4>
+<h4 class="text-center my-3">{{ user.username }}は誰もフォローしていません。</h4>
 {% endfor %}
 {% endblock %}

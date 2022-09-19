@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 
 from .forms import SignupForm, LoginForm
 from .models import Connection
+from tweets.models import Tweet
 
 
 User = get_user_model()
@@ -56,10 +57,12 @@ def unfollow_view(request, username):
 
 
 def following_list_view(request, username):
-    connection = Connection.objects.get(user=request.user)
+    user = User.objects.get(username=username)
+    connection = Connection.objects.get(user=user)
     following_list = connection.following.all()
-    follower_list = User.objects.filter(connection__following=request.user)
+    follower_list = User.objects.filter(connection__following=user)
     context = {
+        "username": username,
         "following_list": following_list,
         "follower_list": follower_list,
     }
@@ -67,11 +70,28 @@ def following_list_view(request, username):
 
 
 def follower_list_view(request, username):
-    connection = Connection.objects.get(user=request.user)
+    user = User.objects.get(username=username)
+    connection = Connection.objects.get(user=user)
     following_list = connection.following.all()
-    follower_list = User.objects.filter(connection__following=request.user)
+    follower_list = User.objects.filter(connection__following=user)
     context = {
+        "username": username,
         "following_list": following_list,
         "follower_list": follower_list,
     }
     return render(request, "accounts/follower_list.html", context)
+
+
+def user_profile__view(request, username):
+    user = User.objects.get(username=username)
+    tweet_list = Tweet.objects.filter(user=user).order_by("created_at")
+    connection = Connection.objects.get(user=user)
+    following_list = connection.following.all()
+    follower_list = User.objects.filter(connection__following=user)
+    context = {
+        "username": username,
+        "tweet_list": tweet_list,
+        "following_list": following_list,
+        "follower_list": follower_list,
+    }
+    return render(request, "accounts/profile.html", context)
