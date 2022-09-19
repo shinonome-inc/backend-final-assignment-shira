@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth import get_user_model
 
@@ -43,14 +43,14 @@ def logout_view(request):
 
 
 def follow_view(request, username):
-    follow_user = User.objects.get(username=username)
+    follow_user = get_object_or_404(User, username=username)
     connection = Connection.objects.get(user=request.user)
     connection.following.add(follow_user)
     return redirect("welcome:index")
 
 
 def unfollow_view(request, username):
-    unfollow_user = User.objects.get(username=username)
+    unfollow_user = get_object_or_404(User, username=username)
     connection = Connection.objects.get(user=request.user)
     connection.following.remove(unfollow_user)
     return redirect("welcome:index")
