@@ -10,9 +10,10 @@
     <div class="card-body">
         <p>{{ tweet.user }}</p>
         {% if not tweet.user in following_list and not tweet.user == request.user %}
-        <a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:follow' tweet.username %}">フォロー</a>
+        <a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:follow' tweet.user.username %}">フォロー</a>
         {% elif tweet.user in following_list %}
-        <a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:unfollow' tweet.username %}">アンフォロー</a>
+        <p>フォローしています</p>
+        <a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:unfollow' tweet.user.username %}">アンフォロー</a>
         {% endif %}
         {% if tweet.user in follower_list%}
         <p>フォローされています</p>

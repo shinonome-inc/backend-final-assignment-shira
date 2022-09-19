@@ -15,7 +15,7 @@ def signup_view(request):
         if form.is_valid():
             user = form.save()
             connection = Connection(user=user)
-            connection.save
+            connection.save()
             login(request, user)
             return redirect("welcome:index")
     else:
