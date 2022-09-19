@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model, SESSION_KEY
 from django.conf import settings
 
 from tweets.models import Tweet
+from .models import Connection
 
 
 User = get_user_model()
@@ -202,7 +203,10 @@ class TestHomeView(TestCase):
 
 class TestLoginView(TestCase):
     def setUp(self):
-        User.objects.create_user(username="testuser", password="testpassword")
+        User.objects.create_user(
+            username="testuser",
+            password="testpassword",
+        )
         self.url = reverse("accounts:login")
 
     def test_success_get(self):
@@ -273,8 +277,62 @@ class TestLogoutView(TestCase):
 
 
 class TestUserProfileView(TestCase):
+    def setUp(self):
+        self.user1 = User.objects.create_user(
+            username="testuser1",
+            password="testpassword",
+        )
+        self.connection1 = Connection(user=self.user1)
+        self.connection1.save()
+        self.user2 = User.objects.create_user(
+            username="testuser2",
+            password="testpassword",
+        )
+        self.connection2 = Connection(user=self.user2)
+        self.connection2.save()
+        self.user3 = User.objects.create_user(
+            username="testuser3",
+            password="testpassword",
+        )
+        self.connection3 = Connection(user=self.user3)
+        self.connection3.save()
+        self.connection1.following.add(self.user2)
+        self.connection2.following.add(self.user3)
+
     def test_success_get(self):
-        pass
+        response1 = self.client.get(
+            reverse("accounts:profile", kwargs={"username": self.user1.username})
+        )
+        self.assertEqual(
+            response1.context["following_list"].count(),
+            self.connection1.following.all().count(),
+        )
+        self.assertEqual(
+            response1.context["follower_list"].count(),
+            User.objects.filter(connection__following=self.user1).count(),
+        )
+        response2 = self.client.get(
+            reverse("accounts:profile", kwargs={"username": self.user2.username})
+        )
+        self.assertEqual(
+            response2.context["following_list"].count(),
+            self.connection2.following.all().count(),
+        )
+        self.assertEqual(
+            response2.context["follower_list"].count(),
+            User.objects.filter(connection__following=self.user2).count(),
+        )
+        response3 = self.client.get(
+            reverse("accounts:profile", kwargs={"username": self.user3.username})
+        )
+        self.assertEqual(
+            response3.context["following_list"].count(),
+            self.connection3.following.all().count(),
+        )
+        self.assertEqual(
+            response3.context["follower_list"].count(),
+            User.objects.filter(connection__following=self.user3).count(),
+        )
 
 
 class TestUserProfileEditView(TestCase):
