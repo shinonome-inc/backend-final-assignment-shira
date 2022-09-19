@@ -178,6 +178,8 @@ class TestHomeView(TestCase):
             username="testuser",
             password="testpassword",
         )
+        connection = Connection(user=self.user)
+        connection.save()
         Tweet.objects.create(
             user=self.user,
             content="test_tweet1",
@@ -203,10 +205,12 @@ class TestHomeView(TestCase):
 
 class TestLoginView(TestCase):
     def setUp(self):
-        User.objects.create_user(
+        user = User.objects.create_user(
             username="testuser",
             password="testpassword",
         )
+        connection = Connection(user=user)
+        connection.save()
         self.url = reverse("accounts:login")
 
     def test_success_get(self):
@@ -260,10 +264,12 @@ class TestLoginView(TestCase):
 
 class TestLogoutView(TestCase):
     def setUp(self):
-        User.objects.create_user(
+        user = User.objects.create_user(
             username="testuser",
             password="testpassword",
         )
+        connection = Connection(user=user)
+        connection.save()
         self.url = reverse("accounts:logout")
 
     def test_success_get(self):
