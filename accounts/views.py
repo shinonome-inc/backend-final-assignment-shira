@@ -44,13 +44,18 @@ def logout_view(request):
 
 def follow_view(request, username):
     follow_user = get_object_or_404(User, username=username)
-    connection = Connection.objects.get(user=request.user)
-    connection.following.add(follow_user)
-    return redirect("welcome:index")
+    if follow_user == request.user:
+        return render(request, "welcome/index.html", status=200)
+    else:
+        connection = Connection.objects.get(user=request.user)
+        connection.following.add(follow_user)
+        return redirect("welcome:index")
 
 
 def unfollow_view(request, username):
     unfollow_user = get_object_or_404(User, username=username)
+    if unfollow_user == request.user:
+        return render(request, "welcome/index.html", status=200)
     connection = Connection.objects.get(user=request.user)
     connection.following.remove(unfollow_user)
     return redirect("welcome:index")

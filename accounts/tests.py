@@ -356,32 +356,161 @@ class TestUserProfileEditView(TestCase):
 
 
 class TestFollowView(TestCase):
+    def setUp(self):
+        self.user1 = User.objects.create_user(
+            username="testuser1",
+            password="testpassword",
+        )
+        self.connection1 = Connection(user=self.user1)
+        self.connection1.save()
+        self.user2 = User.objects.create_user(
+            username="testuser2",
+            password="testpassword",
+        )
+        self.connection2 = Connection(user=self.user2)
+        self.connection2.save()
+        self.user3 = User.objects.create_user(
+            username="testuser3",
+            password="testpassword",
+        )
+        self.connection3 = Connection(user=self.user3)
+        self.connection3.save()
+        self.client.login(username="testuser1", password="testpassword")
+
     def test_success_post(self):
-        pass
+        response = self.client.get(
+            reverse("accounts:follow", kwargs={"username": self.user2.username})
+        )
+        self.assertRedirects(
+            response,
+            reverse("welcome:index"),
+            status_code=302,
+        )
+        self.assertTrue(Connection.objects.filter(following=self.user2).exists())
 
     def test_failure_post_with_not_exist_user(self):
-        pass
+        response = self.client.get(
+            reverse("accounts:follow", kwargs={"username": "non_existing_usename"})
+        )
+        self.assertEquals(response.status_code, 404)
+        self.assertFalse(User.objects.filter(connection__following=self.user1).exists())
 
     def test_failure_post_with_self(self):
-        pass
+        response = self.client.get(
+            reverse("accounts:follow", kwargs={"username": self.user1.username})
+        )
+        self.assertEquals(response.status_code, 200)
+        self.assertFalse(User.objects.filter(connection__following=self.user1).exists())
 
 
 class TestUnfollowView(TestCase):
+    def setUp(self):
+        self.user1 = User.objects.create_user(
+            username="testuser1",
+            password="testpassword",
+        )
+        self.connection1 = Connection(user=self.user1)
+        self.connection1.save()
+        self.user2 = User.objects.create_user(
+            username="testuser2",
+            password="testpassword",
+        )
+        self.connection2 = Connection(user=self.user2)
+        self.connection2.save()
+        self.user3 = User.objects.create_user(
+            username="testuser3",
+            password="testpassword",
+        )
+        self.connection3 = Connection(user=self.user3)
+        self.connection3.save()
+        self.connection1.following.add(self.user2)
+        self.connection1.following.add(self.user3)
+        self.client.login(username="testuser1", password="testpassword")
+
     def test_success_post(self):
-        pass
+        response = self.client.get(
+            reverse("accounts:unfollow", kwargs={"username": self.user2.username})
+        )
+        self.assertRedirects(
+            response,
+            reverse("welcome:index"),
+            status_code=302,
+        )
+        self.assertFalse(Connection.objects.filter(following=self.user2).exists())
 
     def test_failure_post_with_not_exist_tweet(self):
-        pass
+        response = self.client.get(
+            reverse("accounts:unfollow", kwargs={"username": "non_existing_usename"})
+        )
+        self.assertEquals(response.status_code, 404)
+        self.assertFalse(User.objects.filter(connection__following=self.user1).exists())
 
     def test_failure_post_with_incorrect_user(self):
-        pass
+        response = self.client.get(
+            reverse("accounts:follow", kwargs={"username": self.user1.username})
+        )
+        self.assertEquals(response.status_code, 200)
+        self.assertTrue(Connection.objects.filter(following=self.user2).exists())
+        self.assertTrue(Connection.objects.filter(following=self.user3).exists())
 
 
 class TestFollowingListView(TestCase):
+    def setUp(self):
+        self.user1 = User.objects.create_user(
+            username="testuser1",
+            password="testpassword",
+        )
+        self.connection1 = Connection(user=self.user1)
+        self.connection1.save()
+        self.user2 = User.objects.create_user(
+            username="testuser2",
+            password="testpassword",
+        )
+        self.connection2 = Connection(user=self.user2)
+        self.connection2.save()
+        self.user3 = User.objects.create_user(
+            username="testuser3",
+            password="testpassword",
+        )
+        self.connection3 = Connection(user=self.user3)
+        self.connection3.save()
+        self.connection1.following.add(self.user2)
+        self.connection1.following.add(self.user3)
+
     def test_success_get(self):
-        pass
+        response = self.client.get(
+            reverse("accounts:following_list", kwargs={"username": self.user1.username})
+        )
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/following_list.html")
 
 
 class TestFollowerListView(TestCase):
+    def setUp(self):
+        self.user1 = User.objects.create_user(
+            username="testuser1",
+            password="testpassword",
+        )
+        self.connection1 = Connection(user=self.user1)
+        self.connection1.save()
+        self.user2 = User.objects.create_user(
+            username="testuser2",
+            password="testpassword",
+        )
+        self.connection2 = Connection(user=self.user2)
+        self.connection2.save()
+        self.user3 = User.objects.create_user(
+            username="testuser3",
+            password="testpassword",
+        )
+        self.connection3 = Connection(user=self.user3)
+        self.connection3.save()
+        self.connection1.following.add(self.user2)
+        self.connection1.following.add(self.user3)
+
     def test_success_get(self):
-        pass
+        response = self.client.get(
+            reverse("accounts:follower_list", kwargs={"username": self.user1.username})
+        )
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/follower_list.html")
