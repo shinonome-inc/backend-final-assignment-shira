@@ -6,7 +6,7 @@ class CustomUser(AbstractUser):
     pass
 
 
-class Connection(models.Model):
+class FollowConnection(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     followee = models.ManyToManyField(CustomUser, related_name="followee", blank=True)
 

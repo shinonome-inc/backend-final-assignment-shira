@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model, SESSION_KEY
 from django.conf import settings
 
 from tweets.models import Tweet
-from .models import Connection
+from .models import FollowConnection
 
 
 User = get_user_model()
@@ -178,7 +178,7 @@ class TestHomeView(TestCase):
             username="testuser",
             password="testpassword",
         )
-        connection = Connection(user=self.user)
+        connection = FollowConnection(user=self.user)
         connection.save()
         Tweet.objects.create(
             user=self.user,
@@ -209,7 +209,7 @@ class TestLoginView(TestCase):
             username="testuser",
             password="testpassword",
         )
-        connection = Connection(user=user)
+        connection = FollowConnection(user=user)
         connection.save()
         self.url = reverse("accounts:login")
 
@@ -268,7 +268,7 @@ class TestLogoutView(TestCase):
             username="testuser",
             password="testpassword",
         )
-        connection = Connection(user=user)
+        connection = FollowConnection(user=user)
         connection.save()
         self.url = reverse("accounts:logout")
 
@@ -288,19 +288,19 @@ class TestUserProfileView(TestCase):
             username="testuser1",
             password="testpassword",
         )
-        self.connection1 = Connection(user=self.user1)
+        self.connection1 = FollowConnection(user=self.user1)
         self.connection1.save()
         self.user2 = User.objects.create_user(
             username="testuser2",
             password="testpassword",
         )
-        self.connection2 = Connection(user=self.user2)
+        self.connection2 = FollowConnection(user=self.user2)
         self.connection2.save()
         self.user3 = User.objects.create_user(
             username="testuser3",
             password="testpassword",
         )
-        self.connection3 = Connection(user=self.user3)
+        self.connection3 = FollowConnection(user=self.user3)
         self.connection3.save()
         self.connection1.followee.add(self.user2)
         self.connection2.followee.add(self.user3)
@@ -315,7 +315,7 @@ class TestUserProfileView(TestCase):
         )
         self.assertEqual(
             response1.context["follower_list"].count(),
-            User.objects.filter(connection__followee=self.user1).count(),
+            User.objects.filter(followconnection__followee=self.user1).count(),
         )
         response2 = self.client.get(
             reverse("accounts:profile", kwargs={"username": self.user2.username})
@@ -326,7 +326,7 @@ class TestUserProfileView(TestCase):
         )
         self.assertEqual(
             response2.context["follower_list"].count(),
-            User.objects.filter(connection__followee=self.user2).count(),
+            User.objects.filter(followconnection__followee=self.user2).count(),
         )
         response3 = self.client.get(
             reverse("accounts:profile", kwargs={"username": self.user3.username})
@@ -337,7 +337,7 @@ class TestUserProfileView(TestCase):
         )
         self.assertEqual(
             response3.context["follower_list"].count(),
-            User.objects.filter(connection__followee=self.user3).count(),
+            User.objects.filter(followconnection__followee=self.user3).count(),
         )
 
 
@@ -361,19 +361,19 @@ class TestFollowView(TestCase):
             username="testuser1",
             password="testpassword",
         )
-        self.connection1 = Connection(user=self.user1)
+        self.connection1 = FollowConnection(user=self.user1)
         self.connection1.save()
         self.user2 = User.objects.create_user(
             username="testuser2",
             password="testpassword",
         )
-        self.connection2 = Connection(user=self.user2)
+        self.connection2 = FollowConnection(user=self.user2)
         self.connection2.save()
         self.user3 = User.objects.create_user(
             username="testuser3",
             password="testpassword",
         )
-        self.connection3 = Connection(user=self.user3)
+        self.connection3 = FollowConnection(user=self.user3)
         self.connection3.save()
         self.client.login(username="testuser1", password="testpassword")
 
@@ -386,21 +386,25 @@ class TestFollowView(TestCase):
             reverse("welcome:index"),
             status_code=302,
         )
-        self.assertTrue(Connection.objects.filter(followee=self.user2).exists())
+        self.assertTrue(FollowConnection.objects.filter(followee=self.user2).exists())
 
     def test_failure_post_with_not_exist_user(self):
         response = self.client.get(
             reverse("accounts:follow", kwargs={"username": "non_existing_usename"})
         )
         self.assertEquals(response.status_code, 404)
-        self.assertFalse(User.objects.filter(connection__followee=self.user1).exists())
+        self.assertFalse(
+            User.objects.filter(followconnection__followee=self.user1).exists()
+        )
 
     def test_failure_post_with_self(self):
         response = self.client.get(
             reverse("accounts:follow", kwargs={"username": self.user1.username})
         )
         self.assertEquals(response.status_code, 200)
-        self.assertFalse(User.objects.filter(connection__followee=self.user1).exists())
+        self.assertFalse(
+            User.objects.filter(followconnection__followee=self.user1).exists()
+        )
 
 
 class TestUnfollowView(TestCase):
@@ -409,19 +413,19 @@ class TestUnfollowView(TestCase):
             username="testuser1",
             password="testpassword",
         )
-        self.connection1 = Connection(user=self.user1)
+        self.connection1 = FollowConnection(user=self.user1)
         self.connection1.save()
         self.user2 = User.objects.create_user(
             username="testuser2",
             password="testpassword",
         )
-        self.connection2 = Connection(user=self.user2)
+        self.connection2 = FollowConnection(user=self.user2)
         self.connection2.save()
         self.user3 = User.objects.create_user(
             username="testuser3",
             password="testpassword",
         )
-        self.connection3 = Connection(user=self.user3)
+        self.connection3 = FollowConnection(user=self.user3)
         self.connection3.save()
         self.connection1.followee.add(self.user2)
         self.connection1.followee.add(self.user3)
@@ -436,22 +440,24 @@ class TestUnfollowView(TestCase):
             reverse("welcome:index"),
             status_code=302,
         )
-        self.assertFalse(Connection.objects.filter(followee=self.user2).exists())
+        self.assertFalse(FollowConnection.objects.filter(followee=self.user2).exists())
 
     def test_failure_post_with_not_exist_tweet(self):
         response = self.client.get(
             reverse("accounts:unfollow", kwargs={"username": "non_existing_usename"})
         )
         self.assertEquals(response.status_code, 404)
-        self.assertFalse(User.objects.filter(connection__followee=self.user1).exists())
+        self.assertFalse(
+            User.objects.filter(followconnection__followee=self.user1).exists()
+        )
 
     def test_failure_post_with_incorrect_user(self):
         response = self.client.get(
             reverse("accounts:follow", kwargs={"username": self.user1.username})
         )
         self.assertEquals(response.status_code, 200)
-        self.assertTrue(Connection.objects.filter(followee=self.user2).exists())
-        self.assertTrue(Connection.objects.filter(followee=self.user3).exists())
+        self.assertTrue(FollowConnection.objects.filter(followee=self.user2).exists())
+        self.assertTrue(FollowConnection.objects.filter(followee=self.user3).exists())
 
 
 class TestfolloweeListView(TestCase):
@@ -460,19 +466,19 @@ class TestfolloweeListView(TestCase):
             username="testuser1",
             password="testpassword",
         )
-        self.connection1 = Connection(user=self.user1)
+        self.connection1 = FollowConnection(user=self.user1)
         self.connection1.save()
         self.user2 = User.objects.create_user(
             username="testuser2",
             password="testpassword",
         )
-        self.connection2 = Connection(user=self.user2)
+        self.connection2 = FollowConnection(user=self.user2)
         self.connection2.save()
         self.user3 = User.objects.create_user(
             username="testuser3",
             password="testpassword",
         )
-        self.connection3 = Connection(user=self.user3)
+        self.connection3 = FollowConnection(user=self.user3)
         self.connection3.save()
         self.connection1.followee.add(self.user2)
         self.connection1.followee.add(self.user3)
@@ -491,19 +497,19 @@ class TestFollowerListView(TestCase):
             username="testuser1",
             password="testpassword",
         )
-        self.connection1 = Connection(user=self.user1)
+        self.connection1 = FollowConnection(user=self.user1)
         self.connection1.save()
         self.user2 = User.objects.create_user(
             username="testuser2",
             password="testpassword",
         )
-        self.connection2 = Connection(user=self.user2)
+        self.connection2 = FollowConnection(user=self.user2)
         self.connection2.save()
         self.user3 = User.objects.create_user(
             username="testuser3",
             password="testpassword",
         )
-        self.connection3 = Connection(user=self.user3)
+        self.connection3 = FollowConnection(user=self.user3)
         self.connection3.save()
         self.connection1.followee.add(self.user2)
         self.connection1.followee.add(self.user3)
