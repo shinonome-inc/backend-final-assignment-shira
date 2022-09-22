@@ -3,7 +3,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth import get_user_model
 
 from .forms import SignupForm, LoginForm
-from .models import FollowConnection
+from .models import Follower
 from tweets.models import Tweet
 
 
@@ -15,7 +15,7 @@ def signup_view(request):
         form = SignupForm(request.POST)
         if form.is_valid():
             user = form.save()
-            connection = FollowConnection(user=user)
+            connection = Follower(user=user)
             connection.save()
             login(request, user)
             return redirect("welcome:index")
@@ -47,8 +47,8 @@ def follow_view(request, username):
     if follow_user == request.user:
         return render(request, "welcome/index.html", status=200)
     else:
-        connection = FollowConnection.objects.get(user=request.user)
-        connection.following.add(follow_user)
+        connection = Follower.objects.get(user=request.user)
+        connection.followee.add(follow_user)
         return redirect("welcome:index")
 
 
@@ -56,32 +56,32 @@ def unfollow_view(request, username):
     unfollow_user = get_object_or_404(User, username=username)
     if unfollow_user == request.user:
         return render(request, "welcome/index.html", status=200)
-    connection = FollowConnection.objects.get(user=request.user)
-    connection.following.remove(unfollow_user)
+    connection = Follower.objects.get(user=request.user)
+    connection.followee.remove(unfollow_user)
     return redirect("welcome:index")
 
 
-def following_list_view(request, username):
+def followee_list_view(request, username):
     user = User.objects.get(username=username)
-    connection = FollowConnection.objects.get(user=user)
-    following_list = connection.following.all()
-    follower_list = User.objects.filter(followconnection__following=user)
+    connection = Follower.objects.get(user=user)
+    followee_list = connection.followee.all()
+    follower_list = User.objects.filter(follower__followee=user)
     context = {
         "username": username,
-        "following_list": following_list,
+        "followee_list": followee_list,
         "follower_list": follower_list,
     }
-    return render(request, "accounts/following_list.html", context)
+    return render(request, "accounts/followee_list.html", context)
 
 
 def follower_list_view(request, username):
     user = User.objects.get(username=username)
-    connection = FollowConnection.objects.get(user=user)
-    following_list = connection.following.all()
-    follower_list = User.objects.filter(followconnection__following=user)
+    connection = Follower.objects.get(user=user)
+    followee_list = connection.followee.all()
+    follower_list = User.objects.filter(follower__followee=user)
     context = {
         "username": username,
-        "following_list": following_list,
+        "followee_list": followee_list,
         "follower_list": follower_list,
     }
     return render(request, "accounts/follower_list.html", context)
@@ -90,13 +90,13 @@ def follower_list_view(request, username):
 def user_profile__view(request, username):
     user = User.objects.get(username=username)
     tweet_list = Tweet.objects.filter(user=user).order_by("created_at")
-    connection = FollowConnection.objects.get(user=user)
-    following_list = connection.following.all()
-    follower_list = User.objects.filter(followconnection__following=user)
+    connection = Follower.objects.get(user=user)
+    followee_list = connection.followee.all()
+    follower_list = User.objects.filter(follower__followee=user)
     context = {
         "username": username,
         "tweet_list": tweet_list,
-        "following_list": following_list,
+        "followee_list": followee_list,
         "follower_list": follower_list,
     }
     return render(request, "accounts/profile.html", context)

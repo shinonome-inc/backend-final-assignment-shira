@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>{{ username }}さん</h1>
-<a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:following_list' username %}">フォロー数：{{ following_list | length}}</a>
+<a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:followee_list' username %}">フォロー数：{{ followee_list | length}}</a>
 <a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:follower_list' username %}">フォロワー数：{{ follower_list | length}}</a>
 {% for tweet in tweet_list %}
 <p>{{ username }}のツイート</p>

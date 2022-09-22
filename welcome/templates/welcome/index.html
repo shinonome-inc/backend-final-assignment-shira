@@ -8,16 +8,16 @@
 </h1>
 
 <a href="{% url 'tweets:create' %}" class="right-field">呟く</a>
-<a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:following_list' user.username %}">あなたのフォローリスト</a>
+<a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:followee_list' user.username %}">あなたのフォローリスト</a>
 <a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:follower_list' user.username %}">あなたのフォロワーリスト</a>
 {% for tweet in tweet_list %}
 <p></p>
 <div class="card">
     <div class="card-body">
         <a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:profile' tweet.user.username %}">{{ tweet.user }}</a>
-        {% if not tweet.user in following_list and not tweet.user == request.user %}
+        {% if not tweet.user in followee_list and not tweet.user == request.user %}
         <a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:follow' tweet.user.username %}">フォロー</a>
-        {% elif tweet.user in following_list %}
+        {% elif tweet.user in followee_list %}
         <p>
             フォローしています      
             <a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:unfollow' tweet.user.username %}">アンフォロー</a>
