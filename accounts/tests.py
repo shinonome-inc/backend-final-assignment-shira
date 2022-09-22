@@ -302,42 +302,42 @@ class TestUserProfileView(TestCase):
         )
         self.connection3 = FollowConnection(user=self.user3)
         self.connection3.save()
-        self.connection1.followee.add(self.user2)
-        self.connection2.followee.add(self.user3)
+        self.connection1.following.add(self.user2)
+        self.connection2.following.add(self.user3)
 
     def test_success_get(self):
         response1 = self.client.get(
             reverse("accounts:profile", kwargs={"username": self.user1.username})
         )
         self.assertEqual(
-            response1.context["followee_list"].count(),
-            self.connection1.followee.all().count(),
+            response1.context["following_list"].count(),
+            self.connection1.following.all().count(),
         )
         self.assertEqual(
             response1.context["follower_list"].count(),
-            User.objects.filter(followconnection__followee=self.user1).count(),
+            User.objects.filter(followconnection__following=self.user1).count(),
         )
         response2 = self.client.get(
             reverse("accounts:profile", kwargs={"username": self.user2.username})
         )
         self.assertEqual(
-            response2.context["followee_list"].count(),
-            self.connection2.followee.all().count(),
+            response2.context["following_list"].count(),
+            self.connection2.following.all().count(),
         )
         self.assertEqual(
             response2.context["follower_list"].count(),
-            User.objects.filter(followconnection__followee=self.user2).count(),
+            User.objects.filter(followconnection__following=self.user2).count(),
         )
         response3 = self.client.get(
             reverse("accounts:profile", kwargs={"username": self.user3.username})
         )
         self.assertEqual(
-            response3.context["followee_list"].count(),
-            self.connection3.followee.all().count(),
+            response3.context["following_list"].count(),
+            self.connection3.following.all().count(),
         )
         self.assertEqual(
             response3.context["follower_list"].count(),
-            User.objects.filter(followconnection__followee=self.user3).count(),
+            User.objects.filter(followconnection__following=self.user3).count(),
         )
 
 
@@ -386,7 +386,7 @@ class TestFollowView(TestCase):
             reverse("welcome:index"),
             status_code=302,
         )
-        self.assertTrue(FollowConnection.objects.filter(followee=self.user2).exists())
+        self.assertTrue(FollowConnection.objects.filter(following=self.user2).exists())
 
     def test_failure_post_with_not_exist_user(self):
         response = self.client.get(
@@ -394,7 +394,7 @@ class TestFollowView(TestCase):
         )
         self.assertEquals(response.status_code, 404)
         self.assertFalse(
-            User.objects.filter(followconnection__followee=self.user1).exists()
+            User.objects.filter(followconnection__following=self.user1).exists()
         )
 
     def test_failure_post_with_self(self):
@@ -403,7 +403,7 @@ class TestFollowView(TestCase):
         )
         self.assertEquals(response.status_code, 200)
         self.assertFalse(
-            User.objects.filter(followconnection__followee=self.user1).exists()
+            User.objects.filter(followconnection__following=self.user1).exists()
         )
 
 
@@ -427,8 +427,8 @@ class TestUnfollowView(TestCase):
         )
         self.connection3 = FollowConnection(user=self.user3)
         self.connection3.save()
-        self.connection1.followee.add(self.user2)
-        self.connection1.followee.add(self.user3)
+        self.connection1.following.add(self.user2)
+        self.connection1.following.add(self.user3)
         self.client.login(username="testuser1", password="testpassword")
 
     def test_success_post(self):
@@ -440,7 +440,7 @@ class TestUnfollowView(TestCase):
             reverse("welcome:index"),
             status_code=302,
         )
-        self.assertFalse(FollowConnection.objects.filter(followee=self.user2).exists())
+        self.assertFalse(FollowConnection.objects.filter(following=self.user2).exists())
 
     def test_failure_post_with_not_exist_tweet(self):
         response = self.client.get(
@@ -448,7 +448,7 @@ class TestUnfollowView(TestCase):
         )
         self.assertEquals(response.status_code, 404)
         self.assertFalse(
-            User.objects.filter(followconnection__followee=self.user1).exists()
+            User.objects.filter(followconnection__following=self.user1).exists()
         )
 
     def test_failure_post_with_incorrect_user(self):
@@ -456,11 +456,11 @@ class TestUnfollowView(TestCase):
             reverse("accounts:follow", kwargs={"username": self.user1.username})
         )
         self.assertEquals(response.status_code, 200)
-        self.assertTrue(FollowConnection.objects.filter(followee=self.user2).exists())
-        self.assertTrue(FollowConnection.objects.filter(followee=self.user3).exists())
+        self.assertTrue(FollowConnection.objects.filter(following=self.user2).exists())
+        self.assertTrue(FollowConnection.objects.filter(following=self.user3).exists())
 
 
-class TestfolloweeListView(TestCase):
+class TestfollowingListView(TestCase):
     def setUp(self):
         self.user1 = User.objects.create_user(
             username="testuser1",
@@ -480,15 +480,15 @@ class TestfolloweeListView(TestCase):
         )
         self.connection3 = FollowConnection(user=self.user3)
         self.connection3.save()
-        self.connection1.followee.add(self.user2)
-        self.connection1.followee.add(self.user3)
+        self.connection1.following.add(self.user2)
+        self.connection1.following.add(self.user3)
 
     def test_success_get(self):
         response = self.client.get(
-            reverse("accounts:followee_list", kwargs={"username": self.user1.username})
+            reverse("accounts:following_list", kwargs={"username": self.user1.username})
         )
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, "accounts/followee_list.html")
+        self.assertTemplateUsed(response, "accounts/following_list.html")
 
 
 class TestFollowerListView(TestCase):
@@ -511,8 +511,8 @@ class TestFollowerListView(TestCase):
         )
         self.connection3 = FollowConnection(user=self.user3)
         self.connection3.save()
-        self.connection1.followee.add(self.user2)
-        self.connection1.followee.add(self.user3)
+        self.connection1.following.add(self.user2)
+        self.connection1.following.add(self.user3)
 
     def test_success_get(self):
         response = self.client.get(
