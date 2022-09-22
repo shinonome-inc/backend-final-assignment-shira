@@ -2,15 +2,15 @@
 
 {% block content %}
 <h1>{{ username }}さんがフォロー中のユーザー</h1>
-{% for followee in followee_list %}
+{% for following in following_list %}
 <p></p>
 <div class="card">
     <div class="card-body">
-        <p>{{ followee.username }}</p>
-        {% if followee in follower_list %}
+        <p>{{ following.username }}</p>
+        {% if following in follower_list %}
         <p>フォローされています</p>
         {% endif %}
-        <a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:unfollow' followee.username %}">アンフォロー</a>
+        <a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:unfollow' following.username %}">アンフォロー</a>
     </div>
 </div>
 {% empty %}

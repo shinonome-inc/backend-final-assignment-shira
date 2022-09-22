@@ -8,7 +8,7 @@ class CustomUser(AbstractUser):
 
 class FollowConnection(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    followee = models.ManyToManyField(CustomUser, related_name="followee", blank=True)
+    following = models.ManyToManyField(CustomUser, related_name="following", blank=True)
 
     def __str__(self):
         return self.user

@@ -16,11 +16,11 @@ def index_view(request):
     }
     if request.user.is_authenticated:
         connection = FollowConnection.objects.get(user=request.user)
-        followee_list = connection.followee.all()
-        follower_list = User.objects.filter(followconnection__followee=request.user)
+        following_list = connection.following.all()
+        follower_list = User.objects.filter(followconnection__following=request.user)
         context = {
             **context,
-            "followee_list": followee_list,
+            "following_list": following_list,
             "follower_list": follower_list,
         }
     return render(request, "welcome/index.html", context)

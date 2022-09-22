@@ -6,9 +6,9 @@
 <div class="card">
     <div class="card-body">
         <p>{{ follower.username }}</p>
-        {% if not follower in followee_list %}
+        {% if not follower in following_list %}
         <a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:follow' follower.username %}">フォロー</a>
-        {% elif follower in followee_list %}
+        {% elif follower in following_list %}
         <p>フォローしています</p>
         <a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:unfollow' follower.username %}">アンフォロー</a>
         {% endif %}
