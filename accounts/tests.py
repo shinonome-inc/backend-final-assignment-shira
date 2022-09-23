@@ -178,7 +178,7 @@ class TestHomeView(TestCase):
             username="testuser",
             password="testpassword",
         )
-        user_as_follower = Follower(user=self.user)
+        user_as_follower = Follower(follower=self.user)
         user_as_follower.save()
         Tweet.objects.create(
             user=self.user,
@@ -209,7 +209,7 @@ class TestLoginView(TestCase):
             username="testuser",
             password="testpassword",
         )
-        user_as_follower = Follower(user=user)
+        user_as_follower = Follower(follower=user)
         user_as_follower.save()
         self.url = reverse("accounts:login")
 
@@ -268,7 +268,7 @@ class TestLogoutView(TestCase):
             username="testuser",
             password="testpassword",
         )
-        user_as_follower = Follower(user=user)
+        user_as_follower = Follower(follower=user)
         user_as_follower.save()
         self.url = reverse("accounts:logout")
 
@@ -288,19 +288,19 @@ class TestUserProfileView(TestCase):
             username="testuser1",
             password="testpassword",
         )
-        self.user_as_follower1 = Follower(user=self.user1)
+        self.user_as_follower1 = Follower(follower=self.user1)
         self.user_as_follower1.save()
         self.user2 = User.objects.create_user(
             username="testuser2",
             password="testpassword",
         )
-        self.user_as_follower2 = Follower(user=self.user2)
+        self.user_as_follower2 = Follower(follower=self.user2)
         self.user_as_follower2.save()
         self.user3 = User.objects.create_user(
             username="testuser3",
             password="testpassword",
         )
-        self.user_as_follower3 = Follower(user=self.user3)
+        self.user_as_follower3 = Follower(follower=self.user3)
         self.user_as_follower3.save()
         self.user_as_follower1.followee.add(self.user2)
         self.user_as_follower2.followee.add(self.user3)
@@ -361,19 +361,19 @@ class TestFollowView(TestCase):
             username="testuser1",
             password="testpassword",
         )
-        self.user_as_follower1 = Follower(user=self.user1)
+        self.user_as_follower1 = Follower(follower=self.user1)
         self.user_as_follower1.save()
         self.user2 = User.objects.create_user(
             username="testuser2",
             password="testpassword",
         )
-        self.user_as_follower2 = Follower(user=self.user2)
+        self.user_as_follower2 = Follower(follower=self.user2)
         self.user_as_follower2.save()
         self.user3 = User.objects.create_user(
             username="testuser3",
             password="testpassword",
         )
-        self.user_as_follower3 = Follower(user=self.user3)
+        self.user_as_follower3 = Follower(follower=self.user3)
         self.user_as_follower3.save()
         self.client.login(username="testuser1", password="testpassword")
 
@@ -409,19 +409,19 @@ class TestUnfollowView(TestCase):
             username="testuser1",
             password="testpassword",
         )
-        self.user_as_follower1 = Follower(user=self.user1)
+        self.user_as_follower1 = Follower(follower=self.user1)
         self.user_as_follower1.save()
         self.user2 = User.objects.create_user(
             username="testuser2",
             password="testpassword",
         )
-        self.user_as_follower2 = Follower(user=self.user2)
+        self.user_as_follower2 = Follower(follower=self.user2)
         self.user_as_follower2.save()
         self.user3 = User.objects.create_user(
             username="testuser3",
             password="testpassword",
         )
-        self.user_as_follower3 = Follower(user=self.user3)
+        self.user_as_follower3 = Follower(follower=self.user3)
         self.user_as_follower3.save()
         self.user_as_follower1.followee.add(self.user2)
         self.user_as_follower1.followee.add(self.user3)
@@ -460,19 +460,19 @@ class TestfolloweeListView(TestCase):
             username="testuser1",
             password="testpassword",
         )
-        self.user_as_follower1 = Follower(user=self.user1)
+        self.user_as_follower1 = Follower(follower=self.user1)
         self.user_as_follower1.save()
         self.user2 = User.objects.create_user(
             username="testuser2",
             password="testpassword",
         )
-        self.user_as_follower2 = Follower(user=self.user2)
+        self.user_as_follower2 = Follower(follower=self.user2)
         self.user_as_follower2.save()
         self.user3 = User.objects.create_user(
             username="testuser3",
             password="testpassword",
         )
-        self.user_as_follower3 = Follower(user=self.user3)
+        self.user_as_follower3 = Follower(follower=self.user3)
         self.user_as_follower3.save()
         self.user_as_follower1.followee.add(self.user2)
         self.user_as_follower1.followee.add(self.user3)
@@ -491,19 +491,19 @@ class TestFollowerListView(TestCase):
             username="testuser1",
             password="testpassword",
         )
-        self.user_as_follower1 = Follower(user=self.user1)
+        self.user_as_follower1 = Follower(follower=self.user1)
         self.user_as_follower1.save()
         self.user2 = User.objects.create_user(
             username="testuser2",
             password="testpassword",
         )
-        self.user_as_follower2 = Follower(user=self.user2)
+        self.user_as_follower2 = Follower(follower=self.user2)
         self.user_as_follower2.save()
         self.user3 = User.objects.create_user(
             username="testuser3",
             password="testpassword",
         )
-        self.user_as_follower3 = Follower(user=self.user3)
+        self.user_as_follower3 = Follower(follower=self.user3)
         self.user_as_follower3.save()
         self.user_as_follower1.followee.add(self.user2)
         self.user_as_follower1.followee.add(self.user3)

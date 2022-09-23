@@ -16,7 +16,7 @@ def index_view(request):
     }
     if request.user.is_authenticated:
         follower_list = User.objects.filter(follower__followee=request.user)
-        followee_list = User.objects.filter(follower__user=request.user)
+        followee_list = User.objects.filter(follower__follower=request.user)
         context = {
             **context,
             "followee_list": followee_list,
