@@ -178,8 +178,8 @@ class TestHomeView(TestCase):
             username="testuser",
             password="testpassword",
         )
-        connection = Follower(user=self.user)
-        connection.save()
+        user_as_follower = Follower(user=self.user)
+        user_as_follower.save()
         Tweet.objects.create(
             user=self.user,
             content="test_tweet1",
@@ -209,8 +209,8 @@ class TestLoginView(TestCase):
             username="testuser",
             password="testpassword",
         )
-        connection = Follower(user=user)
-        connection.save()
+        user_as_follower = Follower(user=user)
+        user_as_follower.save()
         self.url = reverse("accounts:login")
 
     def test_success_get(self):
@@ -268,8 +268,8 @@ class TestLogoutView(TestCase):
             username="testuser",
             password="testpassword",
         )
-        connection = Follower(user=user)
-        connection.save()
+        user_as_follower = Follower(user=user)
+        user_as_follower.save()
         self.url = reverse("accounts:logout")
 
     def test_success_get(self):
@@ -288,22 +288,22 @@ class TestUserProfileView(TestCase):
             username="testuser1",
             password="testpassword",
         )
-        self.connection1 = Follower(user=self.user1)
-        self.connection1.save()
+        self.user_as_follower1 = Follower(user=self.user1)
+        self.user_as_follower1.save()
         self.user2 = User.objects.create_user(
             username="testuser2",
             password="testpassword",
         )
-        self.connection2 = Follower(user=self.user2)
-        self.connection2.save()
+        self.user_as_follower2 = Follower(user=self.user2)
+        self.user_as_follower2.save()
         self.user3 = User.objects.create_user(
             username="testuser3",
             password="testpassword",
         )
-        self.connection3 = Follower(user=self.user3)
-        self.connection3.save()
-        self.connection1.followee.add(self.user2)
-        self.connection2.followee.add(self.user3)
+        self.user_as_follower3 = Follower(user=self.user3)
+        self.user_as_follower3.save()
+        self.user_as_follower1.followee.add(self.user2)
+        self.user_as_follower2.followee.add(self.user3)
 
     def test_success_get(self):
         response1 = self.client.get(
@@ -311,7 +311,7 @@ class TestUserProfileView(TestCase):
         )
         self.assertEqual(
             response1.context["followee_list"].count(),
-            self.connection1.followee.all().count(),
+            self.user_as_follower1.followee.all().count(),
         )
         self.assertEqual(
             response1.context["follower_list"].count(),
@@ -322,7 +322,7 @@ class TestUserProfileView(TestCase):
         )
         self.assertEqual(
             response2.context["followee_list"].count(),
-            self.connection2.followee.all().count(),
+            self.user_as_follower2.followee.all().count(),
         )
         self.assertEqual(
             response2.context["follower_list"].count(),
@@ -333,7 +333,7 @@ class TestUserProfileView(TestCase):
         )
         self.assertEqual(
             response3.context["followee_list"].count(),
-            self.connection3.followee.all().count(),
+            self.user_as_follower3.followee.all().count(),
         )
         self.assertEqual(
             response3.context["follower_list"].count(),
@@ -361,20 +361,20 @@ class TestFollowView(TestCase):
             username="testuser1",
             password="testpassword",
         )
-        self.connection1 = Follower(user=self.user1)
-        self.connection1.save()
+        self.user_as_follower1 = Follower(user=self.user1)
+        self.user_as_follower1.save()
         self.user2 = User.objects.create_user(
             username="testuser2",
             password="testpassword",
         )
-        self.connection2 = Follower(user=self.user2)
-        self.connection2.save()
+        self.user_as_follower2 = Follower(user=self.user2)
+        self.user_as_follower2.save()
         self.user3 = User.objects.create_user(
             username="testuser3",
             password="testpassword",
         )
-        self.connection3 = Follower(user=self.user3)
-        self.connection3.save()
+        self.user_as_follower3 = Follower(user=self.user3)
+        self.user_as_follower3.save()
         self.client.login(username="testuser1", password="testpassword")
 
     def test_success_post(self):
@@ -409,22 +409,22 @@ class TestUnfollowView(TestCase):
             username="testuser1",
             password="testpassword",
         )
-        self.connection1 = Follower(user=self.user1)
-        self.connection1.save()
+        self.user_as_follower1 = Follower(user=self.user1)
+        self.user_as_follower1.save()
         self.user2 = User.objects.create_user(
             username="testuser2",
             password="testpassword",
         )
-        self.connection2 = Follower(user=self.user2)
-        self.connection2.save()
+        self.user_as_follower2 = Follower(user=self.user2)
+        self.user_as_follower2.save()
         self.user3 = User.objects.create_user(
             username="testuser3",
             password="testpassword",
         )
-        self.connection3 = Follower(user=self.user3)
-        self.connection3.save()
-        self.connection1.followee.add(self.user2)
-        self.connection1.followee.add(self.user3)
+        self.user_as_follower3 = Follower(user=self.user3)
+        self.user_as_follower3.save()
+        self.user_as_follower1.followee.add(self.user2)
+        self.user_as_follower1.followee.add(self.user3)
         self.client.login(username="testuser1", password="testpassword")
 
     def test_success_post(self):
@@ -460,22 +460,22 @@ class TestfolloweeListView(TestCase):
             username="testuser1",
             password="testpassword",
         )
-        self.connection1 = Follower(user=self.user1)
-        self.connection1.save()
+        self.user_as_follower1 = Follower(user=self.user1)
+        self.user_as_follower1.save()
         self.user2 = User.objects.create_user(
             username="testuser2",
             password="testpassword",
         )
-        self.connection2 = Follower(user=self.user2)
-        self.connection2.save()
+        self.user_as_follower2 = Follower(user=self.user2)
+        self.user_as_follower2.save()
         self.user3 = User.objects.create_user(
             username="testuser3",
             password="testpassword",
         )
-        self.connection3 = Follower(user=self.user3)
-        self.connection3.save()
-        self.connection1.followee.add(self.user2)
-        self.connection1.followee.add(self.user3)
+        self.user_as_follower3 = Follower(user=self.user3)
+        self.user_as_follower3.save()
+        self.user_as_follower1.followee.add(self.user2)
+        self.user_as_follower1.followee.add(self.user3)
 
     def test_success_get(self):
         response = self.client.get(
@@ -491,22 +491,22 @@ class TestFollowerListView(TestCase):
             username="testuser1",
             password="testpassword",
         )
-        self.connection1 = Follower(user=self.user1)
-        self.connection1.save()
+        self.user_as_follower1 = Follower(user=self.user1)
+        self.user_as_follower1.save()
         self.user2 = User.objects.create_user(
             username="testuser2",
             password="testpassword",
         )
-        self.connection2 = Follower(user=self.user2)
-        self.connection2.save()
+        self.user_as_follower2 = Follower(user=self.user2)
+        self.user_as_follower2.save()
         self.user3 = User.objects.create_user(
             username="testuser3",
             password="testpassword",
         )
-        self.connection3 = Follower(user=self.user3)
-        self.connection3.save()
-        self.connection1.followee.add(self.user2)
-        self.connection1.followee.add(self.user3)
+        self.user_as_follower3 = Follower(user=self.user3)
+        self.user_as_follower3.save()
+        self.user_as_follower1.followee.add(self.user2)
+        self.user_as_follower1.followee.add(self.user3)
 
     def test_success_get(self):
         response = self.client.get(

@@ -12,8 +12,8 @@ User = get_user_model()
 class TestTweetCreateView(TestCase):
     def setUp(self):
         user = User.objects.create_user(username="testuser", password="testpassword")
-        connection = Follower(user=user)
-        connection.save()
+        user_as_follower = Follower(user=user)
+        user_as_follower.save()
         self.client.login(username="testuser", password="testpassword")
         self.url = reverse("tweets:create")
 
@@ -63,8 +63,8 @@ class TestTweetDetailView(TestCase):
             username="testuser",
             password="testpassword",
         )
-        connection = Follower(user=self.user)
-        connection.save()
+        user_as_follower = Follower(user=self.user)
+        user_as_follower.save()
         self.client.login(
             username="testuser",
             password="testpassword",
@@ -89,14 +89,14 @@ class TestTweetDeleteView(TestCase):
             username="testuser1",
             password="testpassword1",
         )
-        connection1 = Follower(user=self.user1)
-        connection1.save()
+        user_as_follower1 = Follower(user=self.user1)
+        user_as_follower1.save()
         self.user2 = User.objects.create_user(
             username="testuser2",
             password="testpassword2",
         )
-        connection2 = Follower(user=self.user2)
-        connection2.save()
+        user_as_follower2 = Follower(user=self.user2)
+        user_as_follower2.save()
         self.client.login(
             username="testuser1",
             password="testpassword1",

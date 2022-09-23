@@ -15,9 +15,8 @@ def index_view(request):
         "tweet_list": tweet_list,
     }
     if request.user.is_authenticated:
-        connection = Follower.objects.get(user=request.user)
-        followee_list = connection.followee.all()
         follower_list = User.objects.filter(follower__followee=request.user)
+        followee_list = User.objects.filter(follower__user=request.user)
         context = {
             **context,
             "followee_list": followee_list,
