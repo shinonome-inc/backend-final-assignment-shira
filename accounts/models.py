@@ -8,7 +8,9 @@ class CustomUser(AbstractUser):
 
 class Follower(models.Model):
     follower = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    followee = models.ManyToManyField(CustomUser, related_name="followee", blank=True)
+    followee_list = models.ManyToManyField(
+        CustomUser, related_name="followee_list", blank=True
+    )
 
     def __str__(self):
         return self.follower
