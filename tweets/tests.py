@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 
 from .models import Tweet
-from accounts.models import Follower
+from accounts.models import FollowConnection
 
 
 User = get_user_model()
@@ -12,7 +12,7 @@ User = get_user_model()
 class TestTweetCreateView(TestCase):
     def setUp(self):
         user = User.objects.create_user(username="testuser", password="testpassword")
-        user_as_follower = Follower(follower=user)
+        user_as_follower = FollowConnection(follower=user)
         user_as_follower.save()
         self.client.login(username="testuser", password="testpassword")
         self.url = reverse("tweets:create")
@@ -63,7 +63,7 @@ class TestTweetDetailView(TestCase):
             username="testuser",
             password="testpassword",
         )
-        user_as_follower = Follower(follower=self.user)
+        user_as_follower = FollowConnection(follower=self.user)
         user_as_follower.save()
         self.client.login(
             username="testuser",
@@ -89,13 +89,13 @@ class TestTweetDeleteView(TestCase):
             username="testuser1",
             password="testpassword1",
         )
-        user_as_follower1 = Follower(follower=self.user1)
+        user_as_follower1 = FollowConnection(follower=self.user1)
         user_as_follower1.save()
         self.user2 = User.objects.create_user(
             username="testuser2",
             password="testpassword2",
         )
-        user_as_follower2 = Follower(follower=self.user2)
+        user_as_follower2 = FollowConnection(follower=self.user2)
         user_as_follower2.save()
         self.client.login(
             username="testuser1",
