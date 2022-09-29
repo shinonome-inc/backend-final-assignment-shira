@@ -15,8 +15,8 @@ def signup_view(request):
         form = SignupForm(request.POST)
         if form.is_valid():
             user = form.save()
-            user_as_follower = FollowConnection(follower=user)
-            user_as_follower.save()
+            followconnection = FollowConnection(follower=user)
+            followconnection.save()
             login(request, user)
             return redirect("welcome:index")
     else:
@@ -47,8 +47,8 @@ def follow_view(request, username):
     if follow_user == request.user:
         return render(request, "welcome/index.html", status=200)
     else:
-        user_as_follower = FollowConnection.objects.get(follower=request.user)
-        user_as_follower.followee_list.add(follow_user)
+        followconnection = FollowConnection.objects.get(follower=request.user)
+        followconnection.followee_list.add(follow_user)
         return redirect("welcome:index")
 
 
@@ -56,15 +56,15 @@ def unfollow_view(request, username):
     unfollow_user = get_object_or_404(User, username=username)
     if unfollow_user == request.user:
         return render(request, "welcome/index.html", status=200)
-    user_as_follower = FollowConnection.objects.get(follower=request.user)
-    user_as_follower.followee_list.remove(unfollow_user)
+    followconnection = FollowConnection.objects.get(follower=request.user)
+    followconnection.followee_list.remove(unfollow_user)
     return redirect("welcome:index")
 
 
 def followee_list_view(request, username):
     user = User.objects.get(username=username)
-    user_as_follower = FollowConnection.objects.get(follower=user)
-    followee_list = user_as_follower.followee_list.all()
+    followconnection = FollowConnection.objects.get(follower=user)
+    followee_list = followconnection.followee_list.all()
     follower_list = User.objects.filter(followconnection__followee_list=user)
     context = {
         "username": username,
@@ -76,8 +76,8 @@ def followee_list_view(request, username):
 
 def follower_list_view(request, username):
     user = User.objects.get(username=username)
-    user_as_follower = FollowConnection.objects.get(follower=user)
-    followee_list = user_as_follower.followee_list.all()
+    followconnection = FollowConnection.objects.get(follower=user)
+    followee_list = followconnection.followee_list.all()
     follower_list = User.objects.filter(followconnection__followee_list=user)
     context = {
         "username": username,
@@ -90,8 +90,8 @@ def follower_list_view(request, username):
 def user_profile__view(request, username):
     user = User.objects.get(username=username)
     tweet_list = Tweet.objects.filter(user=user).order_by("created_at")
-    user_as_follower = FollowConnection.objects.get(follower=user)
-    followee_list = user_as_follower.followee_list.all()
+    followconnection = FollowConnection.objects.get(follower=user)
+    followee_list = followconnection.followee_list.all()
     follower_list = User.objects.filter(followconnection__followee_list=user)
     context = {
         "username": username,

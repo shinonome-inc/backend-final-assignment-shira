@@ -19,7 +19,7 @@
         <a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:follow' tweet.user.username %}">フォロー</a>
         {% elif tweet.user in followee_list %}
         <p>
-            フォローしています      
+            フォローしています
             <a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:unfollow' tweet.user.username %}">アンフォロー</a>
         </p>
 
