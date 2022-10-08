@@ -506,13 +506,18 @@ class TestfolloweeListView(TestCase):
         )
         self.followconnection3 = FollowConnection(follower=self.user3)
         self.followconnection3.save()
-        self.followconnection1.followee_list.add(self.user2)
-        self.followconnection1.followee_list.add(self.user3)
 
     def test_success_get(self):
         response = self.client.get(
             reverse("accounts:followee_list", kwargs={"username": self.user1.username})
         )
+        self.assertEqual(response.context["followee_list"].count(), 0)
+        self.followconnection1.followee_list.add(self.user2)
+        self.followconnection1.followee_list.add(self.user3)
+        response = self.client.get(
+            reverse("accounts:followee_list", kwargs={"username": self.user1.username})
+        )
+        self.assertEqual(response.context["followee_list"].count(), 2)
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, "accounts/followee_list.html")
 
@@ -537,12 +542,17 @@ class TestFollowConnectionListView(TestCase):
         )
         self.followconnection3 = FollowConnection(follower=self.user3)
         self.followconnection3.save()
-        self.followconnection1.followee_list.add(self.user2)
-        self.followconnection1.followee_list.add(self.user3)
 
     def test_success_get(self):
         response = self.client.get(
             reverse("accounts:follower_list", kwargs={"username": self.user1.username})
         )
+        self.assertEqual(response.context["follower_list"].count(), 0)
+        self.followconnection2.followee_list.add(self.user1)
+        self.followconnection3.followee_list.add(self.user1)
+        response = self.client.get(
+            reverse("accounts:follower_list", kwargs={"username": self.user1.username})
+        )
+        self.assertEqual(response.context["follower_list"].count(), 2)
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, "accounts/follower_list.html")
