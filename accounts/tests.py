@@ -443,7 +443,7 @@ class TestUnfollowView(TestCase):
         self.client.login(username="testuser1", password="testpassword")
 
     def test_success_post(self):
-        self.assertFalse(
+        self.assertTrue(
             FollowConnection.objects.filter(followee_list=self.user2).exists()
         )
         response = self.client.get(
@@ -471,7 +471,7 @@ class TestUnfollowView(TestCase):
         )
 
     def test_failure_post_with_incorrect_user(self):
-        self.assertFalse(
+        self.assertTrue(
             FollowConnection.objects.filter(followee_list=self.user3).exists()
         )
         response = self.client.get(
