@@ -378,6 +378,9 @@ class TestFollowView(TestCase):
         self.client.login(username="testuser1", password="testpassword")
 
     def test_success_post(self):
+        self.assertFalse(
+            FollowConnection.objects.filter(followee_list=self.user2).exists()
+        )
         response = self.client.get(
             reverse("accounts:follow", kwargs={"username": self.user2.username})
         )
@@ -391,6 +394,9 @@ class TestFollowView(TestCase):
         )
 
     def test_failure_post_with_not_exist_user(self):
+        self.assertFalse(
+            User.objects.filter(followconnection__followee_list=self.user1).exists()
+        )
         response = self.client.get(
             reverse("accounts:follow", kwargs={"username": "non_existing_usename"})
         )
@@ -400,6 +406,9 @@ class TestFollowView(TestCase):
         )
 
     def test_failure_post_with_self(self):
+        self.assertFalse(
+            User.objects.filter(followconnection__followee_list=self.user1).exists()
+        )
         response = self.client.get(
             reverse("accounts:follow", kwargs={"username": self.user1.username})
         )
@@ -434,6 +443,9 @@ class TestUnfollowView(TestCase):
         self.client.login(username="testuser1", password="testpassword")
 
     def test_success_post(self):
+        self.assertFalse(
+            FollowConnection.objects.filter(followee_list=self.user2).exists()
+        )
         response = self.client.get(
             reverse("accounts:unfollow", kwargs={"username": self.user2.username})
         )
@@ -447,6 +459,9 @@ class TestUnfollowView(TestCase):
         )
 
     def test_failure_post_with_not_exist_tweet(self):
+        self.assertFalse(
+            User.objects.filter(followconnection__followee_list=self.user1).exists()
+        )
         response = self.client.get(
             reverse("accounts:unfollow", kwargs={"username": "non_existing_usename"})
         )
@@ -456,6 +471,9 @@ class TestUnfollowView(TestCase):
         )
 
     def test_failure_post_with_incorrect_user(self):
+        self.assertFalse(
+            FollowConnection.objects.filter(followee_list=self.user3).exists()
+        )
         response = self.client.get(
             reverse("accounts:follow", kwargs={"username": self.user1.username})
         )
