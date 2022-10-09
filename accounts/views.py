@@ -48,7 +48,9 @@ def follow_view(request, username):
         return render(request, "welcome/index.html", status=200)
     else:
         followconnection = FollowConnection.objects.get(follower=request.user)
-        followconnection.followee_list.add(follow_user)
+        followee_list = followconnection.followee_list.all()
+        if follow_user not in followee_list:
+            followconnection.followee_list.add(follow_user)
         return redirect("welcome:index")
 
 

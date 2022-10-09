@@ -446,6 +446,9 @@ class TestUnfollowView(TestCase):
         self.assertTrue(
             FollowConnection.objects.filter(followee_list=self.user2).exists()
         )
+        self.assertTrue(
+            FollowConnection.objects.filter(followee_list=self.user3).exists()
+        )
         response = self.client.get(
             reverse("accounts:unfollow", kwargs={"username": self.user2.username})
         )
@@ -457,20 +460,32 @@ class TestUnfollowView(TestCase):
         self.assertFalse(
             FollowConnection.objects.filter(followee_list=self.user2).exists()
         )
+        self.assertTrue(
+            FollowConnection.objects.filter(followee_list=self.user3).exists()
+        )
 
     def test_failure_post_with_not_exist_tweet(self):
-        self.assertFalse(
-            User.objects.filter(followconnection__followee_list=self.user1).exists()
+        self.assertTrue(
+            FollowConnection.objects.filter(followee_list=self.user2).exists()
+        )
+        self.assertTrue(
+            FollowConnection.objects.filter(followee_list=self.user3).exists()
         )
         response = self.client.get(
             reverse("accounts:unfollow", kwargs={"username": "non_existing_usename"})
         )
         self.assertEquals(response.status_code, 404)
-        self.assertFalse(
-            User.objects.filter(followconnection__followee_list=self.user1).exists()
+        self.assertTrue(
+            FollowConnection.objects.filter(followee_list=self.user2).exists()
+        )
+        self.assertTrue(
+            FollowConnection.objects.filter(followee_list=self.user3).exists()
         )
 
     def test_failure_post_with_incorrect_user(self):
+        self.assertTrue(
+            FollowConnection.objects.filter(followee_list=self.user2).exists()
+        )
         self.assertTrue(
             FollowConnection.objects.filter(followee_list=self.user3).exists()
         )
