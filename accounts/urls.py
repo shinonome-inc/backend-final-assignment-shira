@@ -17,5 +17,5 @@ urlpatterns = [
     path(
         "<str:username>/follower_list/", views.follower_list_view, name="follower_list"
     ),
-    path("<str:username>/", views.user_profile__view, name="profile"),
+    path("<str:username>/", views.user_profile_view, name="profile"),
 ]

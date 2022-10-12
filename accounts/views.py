@@ -47,10 +47,9 @@ def follow_view(request, username):
     if follow_user == request.user:
         return render(request, "welcome/index.html", status=200)
     else:
-        followconnection = FollowConnection.objects.get(follower=request.user)
-        followee_list = followconnection.followee_list.all()
+        followee_list = User.objects.filter(followconnection__follower=request.user)
         if follow_user not in followee_list:
-            followconnection.followee_list.add(follow_user)
+            request.user.followconnection.followee_list.add(follow_user)
         return redirect("welcome:index")
 
 
@@ -65,8 +64,7 @@ def unfollow_view(request, username):
 
 def followee_list_view(request, username):
     user = User.objects.get(username=username)
-    followconnection = FollowConnection.objects.get(follower=user)
-    followee_list = followconnection.followee_list.all()
+    followee_list = User.objects.filter(followconnection__follower=user)
     follower_list = User.objects.filter(followconnection__followee_list=user)
     context = {
         "username": username,
@@ -78,8 +76,7 @@ def followee_list_view(request, username):
 
 def follower_list_view(request, username):
     user = User.objects.get(username=username)
-    followconnection = FollowConnection.objects.get(follower=user)
-    followee_list = followconnection.followee_list.all()
+    followee_list = User.objects.filter(followconnection__follower=user)
     follower_list = User.objects.filter(followconnection__followee_list=user)
     context = {
         "username": username,
@@ -89,11 +86,10 @@ def follower_list_view(request, username):
     return render(request, "accounts/follower_list.html", context)
 
 
-def user_profile__view(request, username):
+def user_profile_view(request, username):
     user = User.objects.get(username=username)
     tweet_list = Tweet.objects.filter(user=user).order_by("created_at")
-    followconnection = FollowConnection.objects.get(follower=user)
-    followee_list = followconnection.followee_list.all()
+    followee_list = User.objects.filter(followconnection__follower=user)
     follower_list = User.objects.filter(followconnection__followee_list=user)
     context = {
         "username": username,
