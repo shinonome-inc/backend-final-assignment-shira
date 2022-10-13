@@ -65,7 +65,9 @@ def unfollow_view(request, username):
 
 def followee_list_view(request, username):
     user = User.objects.get(username=username)
-    followconnection = FollowConnection.objects.get(follower=user)
+    followconnection = FollowConnection.objects.prefetch_related("followee_list").get(
+        follower=user
+    )
     followee_list = followconnection.followee_list.all()
     follower_list = User.objects.filter(followconnection__followee_list=user)
     context = {
@@ -78,7 +80,9 @@ def followee_list_view(request, username):
 
 def follower_list_view(request, username):
     user = User.objects.get(username=username)
-    followconnection = FollowConnection.objects.get(follower=user)
+    followconnection = FollowConnection.objects.prefetch_related("followee_list").get(
+        follower=user
+    )
     followee_list = followconnection.followee_list.all()
     follower_list = User.objects.filter(followconnection__followee_list=user)
     context = {
@@ -92,7 +96,9 @@ def follower_list_view(request, username):
 def user_profile_view(request, username):
     user = User.objects.get(username=username)
     tweet_list = Tweet.objects.filter(user=user).order_by("created_at")
-    followconnection = FollowConnection.objects.get(follower=user)
+    followconnection = FollowConnection.objects.prefetch_related("followee_list").get(
+        follower=user
+    )
     followee_list = followconnection.followee_list.all()
     follower_list = User.objects.filter(followconnection__followee_list=user)
     context = {
