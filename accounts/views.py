@@ -89,7 +89,7 @@ def follower_list_view(request, username):
     return render(request, "accounts/follower_list.html", context)
 
 
-def user_profile__view(request, username):
+def user_profile_view(request, username):
     user = User.objects.get(username=username)
     tweet_list = Tweet.objects.filter(user=user).order_by("created_at")
     followconnection = FollowConnection.objects.get(follower=user)
