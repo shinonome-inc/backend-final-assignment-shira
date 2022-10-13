@@ -47,7 +47,9 @@ def follow_view(request, username):
     if follow_user == request.user:
         return render(request, "welcome/index.html", status=200)
     else:
-        followconnection = FollowConnection.objects.get(follower=request.user)
+        followconnection = FollowConnection.objects.prefetch_related(
+            "followee_list"
+        ).get(follower=request.user)
         followee_list = followconnection.followee_list.all()
         if follow_user not in followee_list:
             followconnection.followee_list.add(follow_user)
@@ -58,7 +60,9 @@ def unfollow_view(request, username):
     unfollow_user = get_object_or_404(User, username=username)
     if unfollow_user == request.user:
         return render(request, "welcome/index.html", status=200)
-    followconnection = FollowConnection.objects.get(follower=request.user)
+    followconnection = FollowConnection.objects.prefetch_related("followee_list").get(
+        follower=request.user
+    )
     followconnection.followee_list.remove(unfollow_user)
     return redirect("welcome:index")
 
