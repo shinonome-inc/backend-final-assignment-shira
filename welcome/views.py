@@ -3,7 +3,6 @@ from django.views.decorators.http import require_GET
 from django.contrib.auth import get_user_model
 
 from tweets.models import Tweet
-from accounts.models import FollowConnection
 
 User = get_user_model()
 
@@ -15,11 +14,8 @@ def index_view(request):
         "tweet_list": tweet_list,
     }
     if request.user.is_authenticated:
-        followconnection = FollowConnection.objects.get(follower=request.user)
-        followee_list = followconnection.followee_list.all()
-        follower_list = User.objects.filter(
-            followconnection__followee_list=request.user
-        )
+        followee_list = request.user.followees.all()
+        follower_list = request.user.followers.all()
         context = {
             **context,
             "follower_list": follower_list,

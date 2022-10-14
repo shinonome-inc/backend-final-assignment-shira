@@ -15,8 +15,6 @@ def signup_view(request):
         form = SignupForm(request.POST)
         if form.is_valid():
             user = form.save()
-            followconnection = FollowConnection(follower=user)
-            followconnection.save()
             login(request, user)
             return redirect("welcome:index")
     else:
@@ -45,35 +43,29 @@ def logout_view(request):
 def follow_view(request, username):
     follow_user = get_object_or_404(User, username=username)
     if follow_user == request.user:
-        return render(request, "welcome/index.html", status=200)
+        return render(request, "welcome/index.html", status=404)
     else:
-        followconnection = FollowConnection.objects.prefetch_related(
-            "followee_list"
-        ).get(follower=request.user)
-        followee_list = followconnection.followee_list.all()
-        if follow_user not in followee_list:
-            followconnection.followee_list.add(follow_user)
+        FollowConnection.objects.create(follower=request.user, followee=follow_user)
         return redirect("welcome:index")
 
 
 def unfollow_view(request, username):
     unfollow_user = get_object_or_404(User, username=username)
     if unfollow_user == request.user:
-        return render(request, "welcome/index.html", status=200)
-    followconnection = FollowConnection.objects.prefetch_related("followee_list").get(
-        follower=request.user
+        return render(request, "welcome/index.html", status=404)
+    delete_user = get_object_or_404(
+        FollowConnection, follower=request.user, followee=unfollow_user
     )
-    followconnection.followee_list.remove(unfollow_user)
+    delete_user.delete()
     return redirect("welcome:index")
 
 
 def followee_list_view(request, username):
-    user = User.objects.get(username=username)
-    followconnection = FollowConnection.objects.prefetch_related("followee_list").get(
-        follower=user
+    user = User.objects.prefetch_related("followers", "followees").get(
+        username=username
     )
-    followee_list = followconnection.followee_list.all()
-    follower_list = User.objects.filter(followconnection__followee_list=user)
+    followee_list = user.followees.all()
+    follower_list = user.followers.all()
     context = {
         "username": username,
         "followee_list": followee_list,
@@ -83,12 +75,11 @@ def followee_list_view(request, username):
 
 
 def follower_list_view(request, username):
-    user = User.objects.get(username=username)
-    followconnection = FollowConnection.objects.prefetch_related("followee_list").get(
-        follower=user
+    user = User.objects.prefetch_related("followers", "followees").get(
+        username=username
     )
-    followee_list = followconnection.followee_list.all()
-    follower_list = User.objects.filter(followconnection__followee_list=user)
+    followee_list = user.followees.all()
+    follower_list = user.followers.all()
     context = {
         "username": username,
         "followee_list": followee_list,
@@ -98,13 +89,12 @@ def follower_list_view(request, username):
 
 
 def user_profile_view(request, username):
-    user = User.objects.get(username=username)
-    tweet_list = Tweet.objects.filter(user=user).order_by("created_at")
-    followconnection = FollowConnection.objects.prefetch_related("followee_list").get(
-        follower=user
+    user = User.objects.prefetch_related("followers", "followees").get(
+        username=username
     )
-    followee_list = followconnection.followee_list.all()
-    follower_list = User.objects.filter(followconnection__followee_list=user)
+    tweet_list = Tweet.objects.filter(user=user).order_by("created_at")
+    followee_list = user.followees.all()
+    follower_list = user.followers.all()
     context = {
         "username": username,
         "tweet_list": tweet_list,
