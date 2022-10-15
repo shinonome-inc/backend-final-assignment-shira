@@ -1,0 +1,25 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<h1>{{ username }}さん</h1>
+<a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:followee_list' username %}">フォロー数：{{ followee_list | length}}</a>
+<a type="button" data-mdb-ripple-color="dark" href="{% url 'accounts:follower_list' username %}">フォロワー数：{{ follower_list | length}}</a>
+{% for tweet in tweet_list %}
+<p>{{ username }}のツイート</p>
+<div class="card">
+    <div class="card-body">
+        <div>
+            <p>{{ tweet.content | linebreaksbr }}</p>
+        </div>
+        <div align="right">
+            <a type="button" class="btn btn-outline-primary" "text-end" data-mdb-ripple-color="dark"
+                href="{% url 'tweets:detail' tweet.pk %}">
+                詳細
+            </a>
+        </div>
+    </div>
+</div>
+{% empty %}
+<h4 class="text-center my-3">{{ username }}はまだ何も呟いていません。</h4>
+{% endfor %}
+{% endblock %}
