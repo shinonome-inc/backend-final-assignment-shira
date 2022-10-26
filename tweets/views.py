@@ -27,9 +27,9 @@ def tweet_detail_view(request, pk):
     liked_list = Like.objects.filter(user=request.user).values_list(
         "tweet", flat=True
     )
-    like_for_tweet_count = tweet.like_set.count()
+    the_number_of_likes = tweet.like_set.count()
     context={"tweet": tweet, "liked_list": liked_list,
-        "like_for_tweet_count": like_for_tweet_count, }
+        "the_number_of_likes": the_number_of_likes, }
     return render(request, "tweets/detail.html", context)
 
 
@@ -51,7 +51,7 @@ def LikeView(request, pk, *args, **kwargs):
     tweet=get_object_or_404(Tweet, pk=pk)
     Like.objects.get_or_create(user=request.user, tweet=tweet)
     context={
-        "like_for_tweet_count": tweet.like_set.count(),
+        "the_number_of_likes": tweet.like_set.count(),
         "tweet.pk": tweet.pk,
     }
     return JsonResponse(context)
@@ -66,7 +66,7 @@ def UnLikeView(request, pk, *args, **kwargs):
     if like.exists():
         like.delete()
         context={
-            "like_for_tweet_count": tweet.like_set.count(),
+            "the_number_of_likes": tweet.like_set.count(),
             "tweet.pk": tweet.pk,
         }
         return JsonResponse(context)
