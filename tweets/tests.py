@@ -27,7 +27,8 @@ class TestTweetCreateView(TestCase):
             reverse("welcome:index"),
             status_code=302,
         )
-        self.assertTrue(Tweet.objects.filter(content=test_data["content"]).exists())
+        self.assertTrue(Tweet.objects.filter(
+            content=test_data["content"]).exists())
 
     def test_failure_post_with_empty_content(self):
         empty_content_data = {"content": ""}
@@ -92,8 +93,10 @@ class TestTweetDeleteView(TestCase):
             username="testuser1",
             password="testpassword1",
         )
-        self.tweet1 = Tweet.objects.create(user=self.user1, content="testtweet1")
-        self.tweet2 = Tweet.objects.create(user=self.user2, content="testtweet2")
+        self.tweet1 = Tweet.objects.create(
+            user=self.user1, content="testtweet1")
+        self.tweet2 = Tweet.objects.create(
+            user=self.user2, content="testtweet2")
 
     def test_success_post(self):
         response = self.client.post(
@@ -107,7 +110,8 @@ class TestTweetDeleteView(TestCase):
         self.assertFalse(Tweet.objects.filter(content="testtweet1").exists())
 
     def test_failure_post_with_not_exist_tweet(self):
-        response = self.client.post(reverse("tweets:delete", kwargs={"pk": 10}))
+        response = self.client.post(
+            reverse("tweets:delete", kwargs={"pk": 10}))
         self.assertEquals(response.status_code, 404)
         self.assertEquals(Tweet.objects.count(), 2)
 

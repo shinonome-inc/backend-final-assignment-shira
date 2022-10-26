@@ -34,6 +34,7 @@
             <a type="button" class="btn btn-outline-primary" "text-end" data-mdb-ripple-color="dark"
                 href="{% url 'tweets:detail' tweet.pk %}">
                 詳細
+                {% include 'tweets/like_component.html' %}
             </a>
         </div>
     </div>
@@ -44,4 +45,7 @@
 {% else %}
 <h1>Backend Final Assignment</h1>
 {% endif %}
-{% endblock %}
+{% block extrajs %}
+{% include 'accounts/script.html' %}
+{% endblock extrajs %}
+{% endblock content %}

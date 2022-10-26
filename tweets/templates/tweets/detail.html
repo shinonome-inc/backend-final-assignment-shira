@@ -4,7 +4,13 @@
 <p>{{ tweet.user }}のツイート</p>
 <p>{{ tweet.content | linebreaksbr }}</p>
 <p>{{ tweet.created_at }}</p>
+<p>{% include 'tweets/like_component.html' %}</P>
+<span id="like-for-tweet-count">{{ like_for_tweet_count }}</span>
+<span>件のイイね</span>
 {% if tweet.user == request.user %}
 <a type="button" data-mdb-ripple-color="dark" href="{% url 'tweets:delete' tweet.pk %}">削除</a>
 {% endif %}
-{% endblock %}
+{% block extrajs %}
+{% include 'accounts/script.html' %}
+{% endblock extrajs %}
+{% endblock content %}

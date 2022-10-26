@@ -1,8 +1,11 @@
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import login_required
+from django.http import Http404
 
 from .forms import TweetForm
-from .models import Tweet
+from .models import Like, Tweet
 
 
 def tweet_create_view(request):
@@ -21,14 +24,19 @@ def tweet_create_view(request):
 
 def tweet_detail_view(request, pk):
     tweet = Tweet.objects.get(pk=pk)
-    context = {"tweet": tweet}
+    liked_list = Like.objects.filter(user=request.user).values_list(
+        "tweet", flat=True
+    )
+    like_for_tweet_count = tweet.like_set.count()
+    context={"tweet": tweet, "liked_list": liked_list,
+        "like_for_tweet_count": like_for_tweet_count, }
     return render(request, "tweets/detail.html", context)
 
 
 def tweet_delete_view(request, pk):
-    template_name = "tweets/delete.html"
-    tweet = get_object_or_404(Tweet, pk=pk)
-    context = {"tweet": tweet}
+    template_name="tweets/delete.html"
+    tweet=get_object_or_404(Tweet, pk=pk)
+    context={"tweet": tweet}
     if tweet.user == request.user:
         if request.method == "POST":
             tweet.delete()
@@ -36,3 +44,31 @@ def tweet_delete_view(request, pk):
         return render(request, template_name, context)
     else:
         raise PermissionDenied
+
+
+@ login_required
+def LikeView(request, pk, *args, **kwargs):
+    tweet=get_object_or_404(Tweet, pk=pk)
+    Like.objects.get_or_create(user=request.user, tweet=tweet)
+    context={
+        "like_for_tweet_count": tweet.like_set.count(),
+        "tweet.pk": tweet.pk,
+    }
+    return JsonResponse(context)
+
+
+@ login_required
+def UnLikeView(request, pk, *args, **kwargs):
+
+    tweet=get_object_or_404(Tweet, pk=pk)
+    like=Like.objects.filter(user=request.user, tweet=tweet)
+
+    if like.exists():
+        like.delete()
+        context={
+            "like_for_tweet_count": tweet.like_set.count(),
+            "tweet.pk": tweet.pk,
+        }
+        return JsonResponse(context)
+    else:
+        raise Http404

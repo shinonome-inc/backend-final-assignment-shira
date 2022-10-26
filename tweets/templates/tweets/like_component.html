@@ -1,0 +1,13 @@
+{% if tweet.pk in liked_list %}
+<button type="button" id="ajax-like-for-tweet" style="border:none;background:none;color:red" data-is-liked="true"
+    class="like_button" pk="{{tweet.pk}}">
+    <!-- すでにイイねしている時はfasクラス -->
+    <i class="fas fa-heart text-danger" id="like-for-tweet-icon{{tweet.pk}}"></i>
+</button>
+{% else %}
+<button type="button" id="ajax-like-for-tweet" style="border:none;background:none;color:red" data-is-liked="false"
+    class="like_button" pk="{{tweet.pk}}">
+    <!-- イイねしていないときはfarクラス -->
+    <i class="far fa-heart text-danger" id="like-for-tweet-icon{{tweet.pk}}"></i>
+</button>
+{% endif %}
