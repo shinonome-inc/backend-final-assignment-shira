@@ -47,7 +47,7 @@ def tweet_delete_view(request, pk):
 
 
 @ login_required
-def LikeView(request, pk, *args, **kwargs):
+def like_view(request, pk, *args, **kwargs):
     tweet=get_object_or_404(Tweet, pk=pk)
     Like.objects.get_or_create(user=request.user, tweet=tweet)
     context={
@@ -58,7 +58,7 @@ def LikeView(request, pk, *args, **kwargs):
 
 
 @ login_required
-def UnLikeView(request, pk, *args, **kwargs):
+def Unlike_view(request, pk, *args, **kwargs):
 
     tweet=get_object_or_404(Tweet, pk=pk)
     like=Like.objects.filter(user=request.user, tweet=tweet)
