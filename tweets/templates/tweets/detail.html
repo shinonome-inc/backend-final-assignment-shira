@@ -4,7 +4,7 @@
 <p>{{ tweet.user }}のツイート</p>
 <p>{{ tweet.content | linebreaksbr }}</p>
 <p>{{ tweet.created_at }}</p>
-<p>{% include 'tweets/like_component.html' %}</P>
+<p>{% include 'tweets/like.html' %}</P>
 <span id="like-for-tweet-count">{{ the_number_of_likes }}</span>
 <span>件のイイね</span>
 {% if tweet.user == request.user %}
