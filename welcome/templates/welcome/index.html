@@ -34,8 +34,8 @@
             <a type="button" class="btn btn-outline-primary" "text-end" data-mdb-ripple-color="dark"
                 href="{% url 'tweets:detail' tweet.pk %}">
                 詳細
-                {% include 'tweets/like.html' %}
             </a>
+            {% include 'tweets/like.html' %}
         </div>
     </div>
 </div>
