@@ -24,19 +24,20 @@ def tweet_create_view(request):
 
 def tweet_detail_view(request, pk):
     tweet = Tweet.objects.get(pk=pk)
-    liked_list = Like.objects.filter(user=request.user).values_list(
-        "tweet", flat=True
-    )
+    liked_list = Like.objects.filter(user=request.user).values_list("tweet", flat=True)
     the_number_of_likes = tweet.like_set.count()
-    context={"tweet": tweet, "liked_list": liked_list,
-        "the_number_of_likes": the_number_of_likes, }
+    context = {
+        "tweet": tweet,
+        "liked_list": liked_list,
+        "the_number_of_likes": the_number_of_likes,
+    }
     return render(request, "tweets/detail.html", context)
 
 
 def tweet_delete_view(request, pk):
-    template_name="tweets/delete.html"
-    tweet=get_object_or_404(Tweet, pk=pk)
-    context={"tweet": tweet}
+    template_name = "tweets/delete.html"
+    tweet = get_object_or_404(Tweet, pk=pk)
+    context = {"tweet": tweet}
     if tweet.user == request.user:
         if request.method == "POST":
             tweet.delete()
@@ -46,26 +47,26 @@ def tweet_delete_view(request, pk):
         raise PermissionDenied
 
 
-@ login_required
+@login_required
 def like_view(request, pk, *args, **kwargs):
-    tweet=get_object_or_404(Tweet, pk=pk)
+    tweet = get_object_or_404(Tweet, pk=pk)
     Like.objects.get_or_create(user=request.user, tweet=tweet)
-    context={
+    context = {
         "the_number_of_likes": tweet.like_set.count(),
         "tweet.pk": tweet.pk,
     }
     return JsonResponse(context)
 
 
-@ login_required
-def Unlike_view(request, pk, *args, **kwargs):
+@login_required
+def unlike_view(request, pk, *args, **kwargs):
 
-    tweet=get_object_or_404(Tweet, pk=pk)
-    like=Like.objects.filter(user=request.user, tweet=tweet)
+    tweet = get_object_or_404(Tweet, pk=pk)
+    like = Like.objects.filter(user=request.user, tweet=tweet)
 
     if like.exists():
         like.delete()
-        context={
+        context = {
             "the_number_of_likes": tweet.like_set.count(),
             "tweet.pk": tweet.pk,
         }

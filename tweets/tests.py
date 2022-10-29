@@ -27,8 +27,7 @@ class TestTweetCreateView(TestCase):
             reverse("welcome:index"),
             status_code=302,
         )
-        self.assertTrue(Tweet.objects.filter(
-            content=test_data["content"]).exists())
+        self.assertTrue(Tweet.objects.filter(content=test_data["content"]).exists())
 
     def test_failure_post_with_empty_content(self):
         empty_content_data = {"content": ""}
@@ -93,10 +92,8 @@ class TestTweetDeleteView(TestCase):
             username="testuser1",
             password="testpassword1",
         )
-        self.tweet1 = Tweet.objects.create(
-            user=self.user1, content="testtweet1")
-        self.tweet2 = Tweet.objects.create(
-            user=self.user2, content="testtweet2")
+        self.tweet1 = Tweet.objects.create(user=self.user1, content="testtweet1")
+        self.tweet2 = Tweet.objects.create(user=self.user2, content="testtweet2")
 
     def test_success_post(self):
         response = self.client.post(
@@ -110,8 +107,7 @@ class TestTweetDeleteView(TestCase):
         self.assertFalse(Tweet.objects.filter(content="testtweet1").exists())
 
     def test_failure_post_with_not_exist_tweet(self):
-        response = self.client.post(
-            reverse("tweets:delete", kwargs={"pk": 10}))
+        response = self.client.post(reverse("tweets:delete", kwargs={"pk": 10}))
         self.assertEquals(response.status_code, 404)
         self.assertEquals(Tweet.objects.count(), 2)
 
@@ -129,27 +125,31 @@ class TestFavoriteView(TestCase):
             username="testuser", password="testpassword"
         )
         self.client.login(username="testuser", password="testpassword")
+        self.tweet = Tweet.objects.create(user=self.user, content="example_tweet")
 
     def test_success_post(self):
-        tweet = Tweet.objects.create(user=self.user, content="example_tweet")
-        response = self.client.post(reverse("tweets:like", kwargs={"pk": tweet.pk}))
+        response = self.client.post(
+            reverse("tweets:like", kwargs={"pk": self.tweet.pk})
+        )
         self.assertEquals(response.status_code, 200)
-        self.assertTrue(Like.objects.filter(tweet=tweet).exists())
+        self.assertTrue(Like.objects.filter(tweet=self.tweet).exists())
 
     def test_failure_post_with_not_exist_tweet(self):
-        tweet = Tweet.objects.create(user=self.user, content="example_tweet")
         response = self.client.post(reverse("tweets:like", kwargs={"pk": 1000}))
         self.assertEquals(response.status_code, 404)
-        self.assertFalse(Like.objects.filter(tweet=tweet).exists())
+        self.assertFalse(Like.objects.filter(tweet=self.tweet).exists())
 
     def test_failure_post_with_liked_tweet(self):
-        tweet = Tweet.objects.create(user=self.user, content="example_tweet")
-        response = self.client.post(reverse("tweets:like", kwargs={"pk": tweet.pk}))
+        response = self.client.post(
+            reverse("tweets:like", kwargs={"pk": self.tweet.pk})
+        )
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(Like.objects.filter(tweet=tweet).count(), 1)
-        response2 = self.client.post(reverse("tweets:like", kwargs={"pk": tweet.pk}))
+        self.assertEquals(Like.objects.filter(tweet=self.tweet).count(), 1)
+        response2 = self.client.post(
+            reverse("tweets:like", kwargs={"pk": self.tweet.pk})
+        )
         self.assertEquals(response2.status_code, 200)
-        self.assertEquals(Like.objects.filter(tweet=tweet).count(), 1)
+        self.assertEquals(Like.objects.filter(tweet=self.tweet).count(), 1)
 
 
 class TestUnfavoriteView(TestCase):
@@ -159,7 +159,7 @@ class TestUnfavoriteView(TestCase):
         )
         self.client.login(username="testuser", password="testpassword")
         self.tweet = Tweet.objects.create(user=self.user, content="example_tweet")
-        self.client.post(reverse("tweets:like", kwargs={"pk": self.tweet.pk}))
+        Like.objects.create(user=self.user, tweet=self.tweet)
 
     def test_success_post(self):
         self.assertTrue(Like.objects.filter(tweet=self.tweet).exists())
