@@ -1,0 +1,64 @@
+<script type="text/javascript">
+    const getCookie = name => {
+        if (document.cookie && document.cookie !== '') {
+            for (const cookie of document.cookie.split(';')) {
+                const [key, value] = cookie.trim().split('=');
+                if (key === name) {
+                    return decodeURIComponent(value);
+                }
+            }
+        }
+    };
+
+    const csrftoken = getCookie('csrftoken');
+    // console.log(LikeButtons)
+
+
+    window.addEventListener('DOMContentLoaded', function () {
+        const element = document.getElementsByClassName('like_button'); // ①
+
+        for (let i = 0; i < element.length; i++) { // ②
+            element[i].addEventListener('click', function () { // ②
+                pk = Number(element[i].getAttribute('pk'));
+
+                if ((element[i].dataset.isLiked) == 'true') {
+
+                    url = "{% url 'tweets:unlike' 123456 %}".replace(/123456/, pk);
+                }
+                else {
+                    url = "{% url 'tweets:like' 123456 %}".replace(/123456/, pk);
+                }
+                fetch(url, {
+                    method: 'POST',
+                    body: `tweet.pk={{tweet.pk}}`,
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                }).then(response => {
+                    return response.json();
+                }).then(response => {
+                    const icon = document.getElementById('like-for-tweet-icon' + pk)
+
+                    if (element[i].dataset.isLiked == 'false') {
+                        element[i].dataset.isLiked = 'true'
+                        icon.classList.remove('far')
+                        icon.classList.add('fas')
+
+                    } else {
+                        element[i].dataset.isLiked = 'false'
+                        icon.classList.remove('fas')
+                        icon.classList.add('far')
+
+                    }
+                })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            })
+
+        }
+    })
+
+
+</script>

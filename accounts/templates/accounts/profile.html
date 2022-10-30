@@ -16,10 +16,14 @@
                 href="{% url 'tweets:detail' tweet.pk %}">
                 詳細
             </a>
+            {% include 'tweets/like.html' %}
         </div>
     </div>
 </div>
 {% empty %}
 <h4 class="text-center my-3">{{ username }}はまだ何も呟いていません。</h4>
 {% endfor %}
-{% endblock %}
+{% block extrajs %}
+{% include 'accounts/script.html' %}
+{% endblock extrajs %}
+{% endblock content %}

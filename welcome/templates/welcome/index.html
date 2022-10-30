@@ -35,6 +35,7 @@
                 href="{% url 'tweets:detail' tweet.pk %}">
                 詳細
             </a>
+            {% include 'tweets/like.html' %}
         </div>
     </div>
 </div>
@@ -44,4 +45,7 @@
 {% else %}
 <h1>Backend Final Assignment</h1>
 {% endif %}
-{% endblock %}
+{% block extrajs %}
+{% include 'accounts/script.html' %}
+{% endblock extrajs %}
+{% endblock content %}
